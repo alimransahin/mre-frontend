@@ -1,19 +1,25 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
-import signUpValidationSchema from "@/src/schemas/signup.schema";
-import { useUserSignup } from "@/src/hooks/auth.hook";
+import { useChangePassword } from "@/src/hooks/auth.hook";
 import Loading from "@/src/components/UI/Loading";
+import { useUser } from "@/src/context/UserProvider";
+import changePasswordValidationSchema from "@/src/schemas/changePassword.schema";
 
-const SignUpPage = () => {
-  const { mutate: handleSignUp, isPending } = useUserSignup();
+const ChangePassword = () => {
+  const { user } = useUser();
+  const { mutate: handleChangePassword, isPending } = useChangePassword();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    handleSignUp(data);
+    const newData = {
+      ...data,
+      email: user?.email,
+    };
+    console.log(newData);
+    handleChangePassword(newData);
   };
 
   return (
@@ -25,27 +31,22 @@ const SignUpPage = () => {
         <div className="w-[35%]">
           <MraForm
             onSubmit={onSubmit}
-            resolver={zodResolver(signUpValidationSchema)}
+            resolver={zodResolver(changePasswordValidationSchema)}
           >
             <div className="py-3">
-              <MraInput name="name" label="Name" />
-            </div>
-            <div className="py-3">
-              <MraInput name="phone" label="Phone Number" />
-            </div>
-            <div className="py-3">
-              <MraInput name="email" label="Email" type="email" />
-            </div>
-            <div className="py-3">
-              <MraInput name="address" label="Address" />
-            </div>
-            <div className="py-3">
-              <MraInput name="password" label="Password" type="password" />
+              <MraInput name="password" label="Old Password" type="password" />
             </div>
             <div className="py-3">
               <MraInput
-                name="con_password"
-                label="Confirm Password"
+                name="newPassword"
+                label="New Password"
+                type="password"
+              />
+            </div>
+            <div className="py-3">
+              <MraInput
+                name="con_newPassword"
+                label="Confirm New Password"
                 type="password"
               />
             </div>
@@ -55,16 +56,13 @@ const SignUpPage = () => {
               size="lg"
               type="submit"
             >
-              Sign Up
+              Change Password
             </Button>
           </MraForm>
-          <div className="text-center">
-            Already have account ? <Link href={"/login"}>Login</Link>
-          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default SignUpPage;
+export default ChangePassword;

@@ -1,17 +1,28 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useUser } from "@/src/context/UserProvider";
 import { logOut } from "@/src/services/AuthService";
-import { Avatar } from "@nextui-org/avatar";
-import { Button } from "@nextui-org/button";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
+import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
 
 const NavbarDropDown = () => {
+  const router = useRouter();
+  const { setIsLoading: userLoading } = useUser();
+
+  const handleLogout = () => {
+    logOut();
+    userLoading(true);
+    // Navigate to the /logout path, which will trigger the middleware
+    router.push("/logout");
+  };
+
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -28,18 +39,19 @@ const NavbarDropDown = () => {
           </Link>
         </DropdownItem>
         <DropdownItem key="settings" className="w-full">
-          <Link href="/settings" className="w-full block">
+          <Link href="/profile/settings" className="w-full block">
             Settings
           </Link>
         </DropdownItem>
         <DropdownItem key="create-post" className="w-full">
-          <Link href="/create-post" className="w-full block">
+          <Link href="/profile/create-post" className="w-full block">
             Create Post
           </Link>
         </DropdownItem>
-        <DropdownItem key="logout" className="w-full" onClick={() => logOut()}>
+
+        {/* Other dropdown items */}
+        <DropdownItem key="logout" className="w-full" onClick={handleLogout}>
           Logout
-          <span className="w-full block"></span>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

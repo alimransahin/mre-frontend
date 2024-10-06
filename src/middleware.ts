@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getActiveUser } from "./services/AuthService";
+
 const AuthRoutes = ["/login", "/signup"];
+const logoutPath = "/logout"; // Define the logout path
 
 type Role = keyof typeof roleBasedRoutes;
 
@@ -12,6 +14,11 @@ const roleBasedRoutes = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === logoutPath) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   const user = await getActiveUser();
 
   if (!user) {
@@ -36,5 +43,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile", "/profile/:page*", "/admin", "/login", "/signup"],
+  matcher: [
+    "/profile",
+    "/profile/:page*",
+    "/admin",
+    "/login",
+    "/signup",
+    "/logout",
+  ],
 };

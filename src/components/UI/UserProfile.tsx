@@ -6,16 +6,16 @@ import Link from "next/link";
 
 const UserProfile = () => {
   const { user } = useUser();
+
   return (
     <>
       {user?.email ? (
-        <NavbarItem className="hidden sm:flex gap-2">
-          <NavbarDropDown />
-        </NavbarItem>
+        <NavbarDropDown />
       ) : (
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link href="/login"></Link>
-        </NavbarItem>
+        <>
+          <Link href="/login">Login </Link>
+          <Link href="/signup">Signup </Link>
+        </>
       )}
     </>
   );

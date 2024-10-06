@@ -15,7 +15,7 @@ const Card = ({ post }: { post: any }) => {
       <CardHeader className="absolute top-1 z-10 flex-col items-start">
         <p className="absolute top-0 right-1 rounded-full bg-black px-2 text-tiny uppercase">
           {post.name}
-        </p>{" "}
+        </p>
         <h4 className="mt-2 rounded bg-black/30 p-1 text-2xl font-medium  text-white ">
           {post.name}
         </h4>

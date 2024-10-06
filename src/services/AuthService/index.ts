@@ -53,3 +53,12 @@ export const getActiveUser = async () => {
   }
   return decodedToken;
 };
+
+export const changePassword = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post("/auth/password", userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

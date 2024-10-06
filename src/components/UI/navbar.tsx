@@ -15,11 +15,9 @@ import { siteConfig } from "@/src/config/site";
 import { ThemeSwitch } from "@/src/components/UI/theme-switch";
 import { Logo } from "@/src/components/icons";
 import NavbarDropDown from "./NavbarDropDown";
-import { useUser } from "@/src/context/UserProvider";
 import UserProfile from "./UserProfile";
 
 export const Navbar = () => {
-  // const { user } = useUser();
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -54,16 +52,9 @@ export const Navbar = () => {
         <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-        <UserProfile />
-        {/* {user?.email ? (
-          <NavbarItem className="hidden sm:flex gap-2">
-            <NavbarDropDown />
-          </NavbarItem>
-        ) : (
-          <NavbarItem className="hidden sm:flex gap-2">
-            <Link href="/login"></Link>
-          </NavbarItem>
-        )} */}
+        <NavbarItem className="hidden md:flex gap-2">
+          <UserProfile />
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

@@ -9,7 +9,7 @@ const RecentPost = async () => {
 
   return (
     <Container>
-      <div className="section-title" my-8>
+      <div className="section-title my-8">
         <h2 className="mb-2 text-center text-2xl">Recently found items</h2>
         <p className="text-center"> A list of item </p>
       </div>
