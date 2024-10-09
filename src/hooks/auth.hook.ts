@@ -10,6 +10,7 @@ import {
   signUpUser,
   UpdateUserProfile,
 } from "../services/AuthService";
+import { makePayment } from "../services/AuthService/Payment";
 
 export const useUserSignup = () => {
   return useMutation<any, Error, FieldValues>({
@@ -97,6 +98,22 @@ export const useUpdateProfile = () => {
     },
     onSuccess: () => {
       toast.success("Update successful!");
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+
+export const usePayment = () => {
+  return useMutation<any, Error, FieldValues>({
+    mutationKey: ["Payment"],
+    mutationFn: async (data) => {
+      await makePayment(data);
+      // console.log(data);
+    },
+    onSuccess: () => {
+      toast.success("Login successfull");
     },
     onError: (error) => {
       toast.error(error?.message);

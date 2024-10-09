@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useGetCurrentUser, useUpdateProfile } from "@/src/hooks/auth.hook";
 import { useUser } from "@/src/context/UserProvider";
@@ -69,7 +68,7 @@ const UpdateProfile = () => {
             fullWidth
             isClearable
             value={watch("name")}
-            label
+            label="Name"
           />
           <Input
             {...register("phone", {})}
@@ -80,7 +79,7 @@ const UpdateProfile = () => {
             fullWidth
             isClearable
             value={watch("phone")}
-            label
+            label="Phone"
           />
           <Input
             {...register("address", {})}
@@ -91,7 +90,7 @@ const UpdateProfile = () => {
             fullWidth
             isClearable
             value={watch("address")}
-            label
+            label="Address"
           />
 
           <Button

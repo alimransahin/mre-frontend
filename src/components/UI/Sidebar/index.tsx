@@ -6,8 +6,8 @@ import { SidebarOptions } from "./SidebarOptions";
 import { adminLinks, userLinks } from "./constants";
 import { useUser } from "@/src/context/UserProvider";
 import { useGetCurrentUser, useUpdateProfile } from "@/src/hooks/auth.hook";
-import { useEffect, useState } from "react";
-import { Badge, Check, ClipboardEdit, ShieldCheck } from "lucide-react";
+import { useEffect } from "react";
+import { Check, ClipboardEdit, ShieldCheck } from "lucide-react";
 import axios from "axios";
 import envConfig from "@/src/config/envConfig";
 import { toast } from "sonner";
@@ -47,7 +47,6 @@ const Sidebar = () => {
         formData
       );
       const directLink = response.data.data.url;
-      console.log(directLink);
       const profilePicture = { profilePicture: directLink };
       userId && handleUpdateProfile({ data: profilePicture, userId });
       handleGetUser({ email: user?.email });
