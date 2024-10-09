@@ -5,36 +5,47 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
-import { useChangePassword } from "@/src/hooks/auth.hook";
+import { useResetPassword } from "@/src/hooks/auth.hook";
 import Loading from "@/src/components/UI/Loading";
-import { useUser } from "@/src/context/UserProvider";
-import changePasswordValidationSchema from "@/src/schemas/changePassword.schema";
+import resetPasswordValidationSchema from "@/src/schemas/resetPassword.schema";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-const ChangePassword = () => {
-  const { user } = useUser();
-  const { mutate: handleChangePassword, isPending } = useChangePassword();
+const ResetPassword = () => {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const token = searchParams.get("token");
+  const router = useRouter();
+  const {
+    mutate: handleResetPassword,
+    isPending,
+    isSuccess,
+  } = useResetPassword();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const newData = {
       ...data,
-      email: user?.email,
+      email,
+      token,
     };
-    handleChangePassword(newData);
+    handleResetPassword(newData);
   };
+
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      router.push("/login");
+    }
+  }, [isPending, isSuccess]);
 
   return (
     <>
       {isPending && <Loading />}
-      <div className="flex  w-full flex-col items-center justify-center">
-        <h3 className="my-2 text-2xl font-bold">Login with FoundX</h3>
-        <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
+      <div className="flex h-[calc(100vh-200px)] w-full flex-col items-center justify-center">
+        <h3 className="my-2 text-2xl font-bold">Reset Password</h3>
         <div className="w-[35%]">
           <MraForm
             onSubmit={onSubmit}
-            resolver={zodResolver(changePasswordValidationSchema)}
+            resolver={zodResolver(resetPasswordValidationSchema)}
           >
-            <div className="py-3">
-              <MraInput name="password" label="Old Password" type="password" />
-            </div>
             <div className="py-3">
               <MraInput
                 name="newPassword"
@@ -55,7 +66,7 @@ const ChangePassword = () => {
               size="lg"
               type="submit"
             >
-              Change Password
+              Update Password
             </Button>
           </MraForm>
         </div>
@@ -64,4 +75,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default ResetPassword;

@@ -23,11 +23,16 @@ export default function MraInput({
   const {
     register,
     formState: { errors },
+    watch,
   } = useFormContext();
+
+  // Use watch to get the current value, including defaultValues
+  const value = watch(name); // This will provide the default value if set
 
   return (
     <Input
       {...register(name)}
+      defaultValue={value || ""} // Set the default value here
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       isInvalid={!!errors[name]}
       variant={variant}

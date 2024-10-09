@@ -1,4 +1,5 @@
 "use server";
+import envConfig from "@/src/config/envConfig";
 import axiosInstance from "@/src/lib/AxiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
@@ -37,6 +38,62 @@ export const logOut = () => {
   cookies().delete("refreshToken");
 };
 
+export const changePassword = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post("/auth/password", userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const forgetPassword = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/auth/forget-password",
+      userData
+    );
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const resetPassword = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post("/auth/reset-password", userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getCurrentUser = async (email: string) => {
+  try {
+    const { data } = await axiosInstance.get(`/user/${email}`);
+    return data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Failed to retrieve user information"
+    );
+  }
+};
+export const UpdateUserProfile = async (
+  userData: FieldValues,
+  userId: string
+) => {
+  try {
+    const { data } = await axiosInstance.put(
+      `/user/update-profile/${userId}`,
+      userData
+    );
+    return data;
+  } catch (error: any) {
+    console.error("Update failed:", error);
+    throw new Error(error);
+  }
+};
+
 export const getActiveUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   let decodedToken;
@@ -52,13 +109,4 @@ export const getActiveUser = async () => {
     };
   }
   return decodedToken;
-};
-
-export const changePassword = async (userData: FieldValues) => {
-  try {
-    const { data } = await axiosInstance.post("/auth/password", userData);
-    return data;
-  } catch (error: any) {
-    throw new Error(error);
-  }
 };

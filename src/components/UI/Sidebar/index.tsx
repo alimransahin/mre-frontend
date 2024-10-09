@@ -2,35 +2,121 @@
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import Image from "next/image";
-
 import { SidebarOptions } from "./SidebarOptions";
 import { adminLinks, userLinks } from "./constants";
 import { useUser } from "@/src/context/UserProvider";
+import { useGetCurrentUser, useUpdateProfile } from "@/src/hooks/auth.hook";
+import { useEffect, useState } from "react";
+import { Badge, Check, ClipboardEdit, ShieldCheck } from "lucide-react";
+import axios from "axios";
+import envConfig from "@/src/config/envConfig";
+import { toast } from "sonner";
+import { Skeleton } from "@nextui-org/skeleton";
 
 const Sidebar = () => {
   const { user } = useUser();
+  const { mutate: handleUpdateProfile } = useUpdateProfile();
+  const { mutate: handleGetUser, data } = useGetCurrentUser();
+  const userId = user?._id;
+  useEffect(() => {
+    if (user?.email) {
+      handleGetUser({ email: user.email });
+    }
+  }, [user?.email, handleGetUser]);
+
+  const currentUser = data?.data;
+
+  // Image upload
+
+  const imgbbApiKey = envConfig.imgbb_api;
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      await handleUpload(selectedFile); // Call the upload function directly
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,
+        formData
+      );
+      const directLink = response.data.data.url;
+      console.log(directLink);
+      const profilePicture = { profilePicture: directLink };
+      userId && handleUpdateProfile({ data: profilePicture, userId });
+      handleGetUser({ email: user?.email });
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <div>
       <div className="rounded-xl bg-default-100 p-2">
-        <div className="h-[330px] w-full rounded-md">
-          <Image
-            alt="profile"
-            height={100}
-            src={user?.profilePicture as string}
-            width={100}
-          />
+        <div className="h-40 w-40 lg:h-80 lg:w-80 rounded-md relativ  mx-auto">
+          {currentUser?.profilePicture ? (
+            <Image
+              alt="profile"
+              height={100}
+              width={100}
+              src={currentUser?.profilePicture as string}
+              className="h-full w-full object-cover rounded-full"
+            />
+          ) : (
+            <Skeleton className="h-full w-full rounded-full" />
+          )}
+          {/* Edit profile photo */}
+          <div className="relative rounded-lg flex items-center justify-center">
+            {currentUser?.isVerified && (
+              <div className="bg-blue-500 p-2 rounded-full inline-flex items-center justify-center absolute bottom-0">
+                <ShieldCheck strokeWidth={3} color="white" size={20} />
+              </div>
+            )}
+
+            <input
+              id="upload-photo"
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange} // Call the function directly on change
+            />
+            <Button
+              as="label"
+              htmlFor="upload-photo"
+              className="absolute bottom-0 right-0 bg-transparent"
+            >
+              <ClipboardEdit />
+            </Button>
+          </div>
+          {/* Profile info */}
         </div>
         <div className="my-3">
-          <h1 className="text-2xl font-semibold">{user?.name}</h1>
-          <p className="break-words text-sm">{user?.email}</p>
+          <h1 className="text-2xl font-semibold relative inline-flex items-center">
+            {currentUser?.name}
+            {currentUser?.isVerified && (
+              <span className="bg-blue-500  rounded-full inline-flex items-center justify-center ml-1">
+                <Check strokeWidth={3} size={12} />
+              </span>
+            )}
+          </h1>
+
+          <p className="break-words text-sm">Email: {currentUser?.email}</p>
+          <p className="break-words text-sm">Phone: {currentUser?.phone}</p>
+          <p className="break-words text-sm">Address: {currentUser?.address}</p>
         </div>
         <Button
           as={Link}
           className="mt-2 w-full rounded-md"
-          href={"/profile/create-post"}
+          href={"/profile/edit-profile"}
         >
-          Create a post
+          Edit Profile
         </Button>
       </div>
       <div className="mt-3 space-y-2 rounded-xl bg-default-100 p-2">
@@ -43,3 +129,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+// {name: 'Md Al Imran', phone: '01517824146', address: 'Baliapara Rupganj'}

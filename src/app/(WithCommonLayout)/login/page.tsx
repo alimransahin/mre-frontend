@@ -63,6 +63,9 @@ const LoginPage = () => {
           <div className="text-center">
             Don&lsquo;t have account ? <Link href={"/signup"}>Sign Up</Link>
           </div>
+          <div className="text-center text-rose-600">
+            <Link href={"/forget-password"}>Forget Password?</Link>
+          </div>
         </div>
       </div>
     </>
