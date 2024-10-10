@@ -21,7 +21,6 @@ export const makePayment = async (userData: FieldValues) => {
       toast.error("Payment URL not found. Please try again.");
     }
 
-    console.log(data);
     return data;
   } catch (error: any) {
     console.error("Error during payment:", error);

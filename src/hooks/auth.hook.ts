@@ -110,7 +110,7 @@ export const usePayment = () => {
     mutationKey: ["Payment"],
     mutationFn: async (data) => {
       await makePayment(data);
-      // console.log(data);
+
     },
     onSuccess: () => {
       toast.success("Login successfull");
