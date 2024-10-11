@@ -58,7 +58,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      <div className="rounded-xl bg-default-100 p-2">
+      <div className="rounded-b-lg md:rounded-lg bg-default-100 p-2">
         <div className="h-40 w-40 lg:h-80 lg:w-80 rounded-md relativ  mx-auto">
           {currentUser?.profilePicture ? (
             <Image

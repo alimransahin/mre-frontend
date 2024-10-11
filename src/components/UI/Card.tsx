@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
 import { useUser } from "@/src/context/UserProvider";
 import { useUserUpvote } from "@/src/hooks/post.hook";
@@ -19,20 +19,31 @@ const PostCard = ({ post }: { post: any }) => {
   const { user } = useUser();
   const description = post?.description;
   const smallDescription = description?.slice(0, 300);
-  const { mutate: handleUpvote, isPending, isSuccess } = useUserUpvote();
-  // upvote and downvote
+  const { mutate: handleUpvote, isSuccess } = useUserUpvote();
+
+  // State for upvotes and downvotes
+  const [upvotes, setUpvotes] = useState(post?.upvotes ? post.upvotes : 0);
+  const [downvotes, setDownvotes] = useState(post?.upvotes ? post.upvotes : 0);
+
+  // Upvote and downvote handlers
   const onUpvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Upvote" };
     handleUpvote(data);
-    isSuccess && toast.success("upvoted");
+
+    setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
+    setUpvotes((prev: number) => prev + 1);
+    isSuccess && toast.success("Upvoted");
   };
+
   const onDownvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Downvote" };
     handleUpvote(data);
-    isSuccess && toast.success("upvoted");
+    setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
+    setDownvotes((prev: number) => prev + 1);
+    isSuccess && toast.success("Downvoted");
   };
 
-  // generate pdf
+  // Generate PDF function
   const postRef = useRef(null);
   const handleGeneratePdf = () => {
     const opt = {
@@ -52,10 +63,24 @@ const PostCard = ({ post }: { post: any }) => {
         <div ref={postRef}>
           {/* Header Section */}
           <CardHeader className="p-0">
+            <img
+              src={post?.user?.profilePicture}
+              alt="Profile"
+              className="w-10 h-10 rounded-full mr-3"
+            />
             <div className="flex items-center">
               <div>
-                <h4 className="text-blue-500 font-semibold">Link-Up</h4>
-                <p className="text-gray-400 text-sm">3 days ago</p>
+                <h4 className="text-blue-500 font-semibold">
+                  {post?.user?.name}
+                </h4>
+                <p className="text-gray-400 text-sm">
+                  {post?.user?.createdAt &&
+                    new Date(post.user.createdAt).toLocaleDateString("en-GB", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -64,7 +89,7 @@ const PostCard = ({ post }: { post: any }) => {
           <CardBody className="p-0">
             <div>
               <span
-                className=" custom-description"
+                className="custom-description"
                 dangerouslySetInnerHTML={{ __html: smallDescription }}
               ></span>
               {description?.length > 300 && (
@@ -81,11 +106,12 @@ const PostCard = ({ post }: { post: any }) => {
               className="object-cover w-full"
             />
           </CardBody>
-          <CardBody className="p-4 flex justify-between">
-            <p className="text-gray-500 text-sm">
-              😅 Md. Sayed and 123K others
+          <CardBody className="p-4 flex flex-row justify-between">
+            <p className="text-default-500 text-sm">{upvotes} Upvotes</p>
+            <p className="text-default-500 text-sm">{downvotes} Downvotes</p>
+            <p className="text-default-500 text-sm">
+              {post.comments?.length ? post.comments.length : 0} Comments
             </p>
-            <p className="text-gray-500 text-sm">1.5K comments • 7.9K shares</p>
           </CardBody>
         </div>
         {/* Footer Buttons */}
