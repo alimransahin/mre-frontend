@@ -20,7 +20,7 @@ const ContactUs = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     // Handle form submission logic (e.g., send data to API)
-    console.log(formData);
+    // console.log(formData);
   };
 
   return (

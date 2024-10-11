@@ -17,7 +17,7 @@ export const useUserSignup = () => {
     mutationKey: ["User_Signup"],
     mutationFn: async (data) => await signUpUser(data),
     onSuccess: () => {
-      toast.success("create successfull");
+      toast.success("Sign up successfull");
     },
     onError: (error) => {
       toast.error(error?.message);
@@ -110,10 +110,9 @@ export const usePayment = () => {
     mutationKey: ["Payment"],
     mutationFn: async (data) => {
       await makePayment(data);
-
     },
     onSuccess: () => {
-      toast.success("Login successfull");
+      toast.success("Payment successfull");
     },
     onError: (error) => {
       toast.error(error?.message);

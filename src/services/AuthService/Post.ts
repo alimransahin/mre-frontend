@@ -11,3 +11,11 @@ export const userPost = async (postData: FieldValues) => {
     throw new Error(error);
   }
 };
+export const userUpvote = async (postData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post("/vote", postData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
