@@ -1,14 +1,14 @@
 export default function layout({
   children,
-  recentPosts,
+  userPosts,
 }: {
   children: React.ReactNode;
-  recentPosts: React.ReactNode;
+  userPosts: React.ReactNode;
 }) {
   return (
     <>
       {children}
-      {recentPosts}
+      {userPosts}
     </>
   );
 }

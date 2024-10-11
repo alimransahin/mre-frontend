@@ -1,46 +1,104 @@
-import { Button } from "@nextui-org/button";
+"use client";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import {
-  Card as NextUICard,
-  CardBody,
-  CardHeader,
-  CardFooter,
-} from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
+  ArrowBigDown,
+  ArrowBigUp,
+  Download,
+  Forward,
+  MessageSquareMore,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRef } from "react";
+import html2pdf from "html2pdf.js";
 
-import React from "react";
+const PostCard = ({ post }: { post: any }) => {
+  const description = post?.description;
+  const smallDescription = description?.slice(0, 300);
+  const postRef = useRef(null);
+  const handleGeneratePdf = () => {
+    const opt = {
+      margin: 1,
+      filename: "myfile.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
 
-const Card = ({ post }: { post: any }) => {
+    // New Promise-based usage:
+    html2pdf().from(postRef.current).set(opt).save();
+  };
   return (
-    <NextUICard isFooterBlurred className="h-[300px] w-full">
-      <CardHeader className="absolute top-1 z-10 flex-col items-start">
-        <p className="absolute top-0 right-1 rounded-full bg-black px-2 text-tiny uppercase">
-          {post.name}
-        </p>
-        <h4 className="mt-2 rounded bg-black/30 p-1 text-2xl font-medium  text-white ">
-          {post.name}
-        </h4>
-      </CardHeader>
-      <Image
-        removeWrapper
-        alt="card bg"
-        className="scale-x-125 z-0 h-full w-full -translate-y-6 object-cover "
-        src="https://i.ibb.co.com/Yjp4Kcr/about.jpg"
-      />
-      <CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-400">
-        <div>
-          <p className="text-tiny text-black">{post.pricePerHour}</p>
-          <p className="text-tiny text-black">{post.color}</p>
+    <div className="flex justify-center ">
+      <Card className="max-w-2xl shadow-lg p-4 bg-default-100">
+        <div ref={postRef}>
+          {/* Header Section */}
+          <CardHeader className="p-0">
+            <div className="flex items-center">
+              <div>
+                <h4 className="text-blue-500 font-semibold">Link-Up</h4>
+                <p className="text-gray-400 text-sm">3 days ago</p>
+              </div>
+            </div>
+          </CardHeader>
+
+          {/* Main Image */}
+          <CardBody className="p-0">
+            <div>
+              <span
+                className=" custom-description"
+                dangerouslySetInnerHTML={{ __html: smallDescription }}
+              ></span>
+              {description?.length > 300 && (
+                <Link href={"/"} className="text-primary-600 inline ml-1">
+                  See More
+                </Link>
+              )}
+            </div>
+            <Image
+              src={post.image}
+              alt="Post Image"
+              width={500}
+              height={280}
+              className="object-cover w-full"
+            />
+          </CardBody>
+
+          {/* Description */}
+
+          {/* Reaction Section */}
+          <CardBody className="p-4 flex justify-between">
+            <p className="text-gray-500 text-sm">
+              😅 Md. Sayed and 123K others
+            </p>
+            <p className="text-gray-500 text-sm">1.5K comments • 7.9K shares</p>
+          </CardBody>
         </div>
-        <Button
-          className=" bg-black text-tiny text-white"
-          radius="full"
-          size="sm"
-        >
-          Details
-        </Button>
-      </CardFooter>
-    </NextUICard>
+        {/* Footer Buttons */}
+        <CardFooter className="border-t border-gray-200 p-2 flex justify-around">
+          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+            <ArrowBigUp className="mx-auto" /> Upvote
+          </span>
+          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+            <ArrowBigDown className="mx-auto" /> Down vote
+          </span>
+          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+            <MessageSquareMore className="mx-auto" />
+            Comment
+          </span>
+          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+            <Forward className="mx-auto" /> Share
+          </span>
+          <span
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
+            onClick={handleGeneratePdf}
+          >
+            <Download className="mx-auto" /> Save
+          </span>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
 
-export default Card;
+export default PostCard;

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-description h2,
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.custom-description p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  text-align: justify;
+  display: inline;
+}
+
+.custom-description a {
+  color: #1e90ff;
+  text-decoration: underline;
+}

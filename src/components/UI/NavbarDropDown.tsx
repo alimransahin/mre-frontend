@@ -11,8 +11,18 @@ import {
 } from "@nextui-org/dropdown";
 import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
+import { useGetCurrentUser } from "@/src/hooks/auth.hook";
+import { useEffect } from "react";
 
 const NavbarDropDown = () => {
+  const { user } = useUser();
+  const { mutate: handleGetUser, data } = useGetCurrentUser();
+  useEffect(() => {
+    if (user?.email) {
+      handleGetUser({ email: user.email });
+    }
+  }, [user?.email, handleGetUser]);
+  const currentUser = data?.data;
   const router = useRouter();
   const { setIsLoading: userLoading } = useUser();
 
@@ -26,11 +36,19 @@ const NavbarDropDown = () => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Avatar
-          className="cursor-pointer"
-          showFallback
-          src="https://images.unsplash.com/broken"
-        />
+        {currentUser?.profilePicture ? (
+          <Avatar
+            className="cursor-pointer"
+            showFallback
+            src={currentUser?.profilePicture}
+          />
+        ) : (
+          <Avatar
+            className="cursor-pointer"
+            showFallback
+            src="https://images.unsplash.com/broken"
+          />
+        )}
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem key="profile" className="w-full">
