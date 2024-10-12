@@ -9,16 +9,28 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
 import { useUser } from "@/src/context/UserProvider";
 import { useUserUpvote } from "@/src/hooks/post.hook";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useUpdateFollow } from "@/src/hooks/auth.hook";
 
-const PostCard = ({ post }: { post: any }) => {
+interface PostCardProps {
+  post: any; // You can replace `any` with a more specific type if possible
+  paramsId?: string; // Optional prop
+}
+const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   const { user } = useUser();
   const description = post?.description;
-  const smallDescription = description?.slice(0, 300);
+  let smallDescription;
+  if (paramsId === post._id) {
+    smallDescription = description;
+  } else {
+    smallDescription = description?.slice(0, 300);
+  }
+
   const { mutate: handleUpvote, isSuccess } = useUserUpvote();
 
   // State for upvotes and downvotes
@@ -56,10 +68,78 @@ const PostCard = ({ post }: { post: any }) => {
 
     html2pdf().from(postRef.current).set(opt).save();
   };
+  // comment
+  const router = useRouter();
+  const handleComment = () => {
+    if (paramsId === post._id) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    } else {
+      router.push(`/post-details/${post._id}`);
+    }
+  };
+  // follow
+  // const followStatus = post?.user?.followers;
+  // const [follow, setFollow] = useState(followStatus.includes(user?._id)); // Default to false
+  // const { mutate: handleFollow, isPending } = useUpdateFollow();
+
+  // useEffect(() => {
+  //   if (Array.isArray(followStatus) && followStatus.includes(user?._id)) {
+  //     setFollow(true);
+  //   } else {
+  //     setFollow(false);
+  //   }
+  // }, [user?._id, followStatus]);
+  // const onFollowClick = async () => {
+  //   if (!user?._id) {
+  //     console.error("User ID is undefined");
+  //     toast.error("User is not authenticated");
+  //     return; // Stop execution if user ID is not available
+  //   }
+
+  //   try {
+  //     await handleFollow({ authId: post.user._id, userId: user._id });
+  //     setFollow(!follow);
+  //   } catch (error) {
+  //     console.error("Error updating follow status:", error);
+  //     toast.error("Failed to update follow status");
+  //   }
+  // };
+  // console.log(follow);
+  const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
+  const [follow, setFollow] = useState(false); // Initialize to false by default
+  const { mutate: handleFollow, isPending } = useUpdateFollow();
+
+  useEffect(() => {
+    // Check if followStatus is an array and user._id exists
+    if (Array.isArray(followStatus) && user?._id) {
+      setFollow(followStatus.includes(user._id));
+    }
+  }, [user?._id, followStatus]);
+
+  const onFollowClick = async () => {
+    if (!user?._id) {
+      console.error("User ID is undefined");
+      toast.error("User is not authenticated");
+      return; // Stop execution if user ID is not available
+    }
+
+    try {
+      await handleFollow({ authId: post.user._id, userId: user._id });
+      setFollow(!follow); // Toggle follow state
+    } catch (error) {
+      console.error("Error updating follow status:", error);
+      toast.error("Failed to update follow status");
+    }
+  };
 
   return (
     <div className="flex justify-center ">
-      <Card className="max-w-2xl shadow-lg p-4 bg-default-100">
+      <Card
+        className={`max-w-2xl shadow-lg p-4 bg-default-100 ${paramsId === post._id && "rounded-b-none"}`}
+      >
         <div ref={postRef}>
           {/* Header Section */}
           <CardHeader className="p-0">
@@ -70,10 +150,19 @@ const PostCard = ({ post }: { post: any }) => {
             />
             <div className="flex items-center">
               <div>
-                <h4 className="text-blue-500 font-semibold">
-                  {post?.user?.name}
-                </h4>
-                <p className="text-gray-400 text-sm">
+                <div className="flex flex-row gap-1 items-center">
+                  <h4 className=" font-semibold inline-block">
+                    {post?.user?.name}
+                  </h4>
+                  <p
+                    onClick={onFollowClick}
+                    className="text-blue-500 text-sm font-semibold cursor-pointer inline-block"
+                  >
+                    {follow ? "Unfollow" : "Follow"}
+                  </p>
+                </div>
+                <p className="text-blue-500 text-sm">{post.category}</p>
+                <p className="text-default-500 text-sm">
                   {post?.user?.createdAt &&
                     new Date(post.user.createdAt).toLocaleDateString("en-GB", {
                       month: "long",
@@ -86,14 +175,17 @@ const PostCard = ({ post }: { post: any }) => {
           </CardHeader>
 
           {/* Main Image */}
-          <CardBody className="p-0">
+          <CardBody className="p-0 py-3">
             <div>
               <span
                 className="custom-description"
                 dangerouslySetInnerHTML={{ __html: smallDescription }}
               ></span>
-              {description?.length > 300 && (
-                <Link href={"/"} className="text-primary-600 inline ml-1">
+              {description?.length > 300 && paramsId != post._id && (
+                <Link
+                  href={`/post-details/${post._id}`}
+                  className="text-primary-600 inline ml-1"
+                >
                   See More
                 </Link>
               )}
@@ -128,7 +220,10 @@ const PostCard = ({ post }: { post: any }) => {
           >
             <ArrowBigDown className="mx-auto" /> Down vote
           </span>
-          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+          <span
+            onClick={handleComment}
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
+          >
             <MessageSquareMore className="mx-auto" />
             Comment
           </span>

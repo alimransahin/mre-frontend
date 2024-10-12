@@ -42,7 +42,7 @@ export const UpdateUserComment = async (
   commentId: string
 ) => {
   try {
-    console.log("commentId:", userData, commentId);
+
     const { data } = await axiosInstance.put(
       `/comment/update-comment/${commentId}`,
       userData
@@ -53,28 +53,12 @@ export const UpdateUserComment = async (
     throw new Error(error);
   }
 };
-//
-//
-//
-// export const getUserComment = async (postId: string) => {
-//   try {
-//     const { data } = await axiosInstance.get(`/post/${postId}`);
-//     return data;
-//   } catch (error: any) {
-//     throw new Error(
-//       error.response?.data?.message || "Failed to retrieve user information"
-//     );
-//   }
-// };
-
-// export const getPostAllComment = () => {
-//   return useMutation<any, Error, FieldValues>({
-//     mutationKey: ["Get_User_Comment"],
-//     mutationFn: async (data) => await getUserComment(data.postId),
-//     onError: (error) => {
-//       toast.error(error?.message);
-//     },
-//   });
-// };
-
-// const { data: sampleComments } = getPostAllComment();
+export const deleteUserComment = async (commentId: string) => {
+  try {
+    const { data } = await axiosInstance.delete(`/comment/${commentId}`);
+    return data;
+  } catch (error: any) {
+    console.error("Delete failed:", error);
+    throw new Error(error);
+  }
+};

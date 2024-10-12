@@ -92,6 +92,18 @@ export const UpdateUserProfile = async (
     throw new Error(error);
   }
 };
+export const UpdateUserFollow = async (authId: string, userId: string) => {
+  console.log("userId", userId);
+  try {
+    const { data } = await axiosInstance.put(`/user/follow/${authId}`, {
+      userId,
+    });
+    return data;
+  } catch (error: any) {
+    console.error("Follow failed:", error);
+    throw new Error(error);
+  }
+};
 
 export const getActiveUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;

@@ -8,6 +8,7 @@ import {
   loginUser,
   resetPassword,
   signUpUser,
+  UpdateUserFollow,
   UpdateUserProfile,
 } from "../services/AuthService";
 import { makePayment } from "../services/AuthService/Payment";
@@ -98,6 +99,20 @@ export const useUpdateProfile = () => {
     },
     onSuccess: () => {
       toast.success("Update successful!");
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+export const useUpdateFollow = () => {
+  return useMutation<any, Error, { authId: string; userId: string }>({
+    mutationKey: ["Update_Follow"],
+    mutationFn: async ({ authId, userId }) => {
+      return await UpdateUserFollow(authId, userId);
+    },
+    onSuccess: () => {
+      toast.success("Successful!");
     },
     onError: (error) => {
       toast.error(error?.message);

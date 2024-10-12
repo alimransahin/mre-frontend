@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import {
+  useDeleteComment,
   useGetSinglePost,
   useUpdateComment,
   useUserComment,
@@ -20,9 +21,10 @@ interface IComment {
     name: string;
   };
 }
-
-export default function CommentsPage() {
-  const postId = "67079c09862111098e650cde";
+interface CommentsPageProps {
+  postId: string;
+}
+const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
   const { data: sampleComments, error, mutate } = useGetSinglePost();
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function CommentsPage() {
   }
 
   const comments = sampleComments?.data?.comments;
+  // create comment
   const { register, handleSubmit, reset } = useForm();
   const { user } = useUser();
   const [newComment, setNewComment] = useState("");
@@ -45,7 +48,7 @@ export default function CommentsPage() {
     try {
       const commentData = {
         ...data,
-        postId: "67079c09862111098e650cde",
+        postId: postId,
         userId: user?._id,
       };
 
@@ -60,7 +63,7 @@ export default function CommentsPage() {
       toast.error("Failed to post comment");
     }
   };
-
+  // update comment
   const { mutate: handleEdit, isPending } = useUpdateComment();
   const [currentComment, setCurrentComment] = useState<IComment | null>(null);
 
@@ -110,18 +113,18 @@ export default function CommentsPage() {
       toast.error("Failed to update comment");
     }
   };
+  // delete comment
+  const { mutate: handleDelete } = useDeleteComment();
   const handleDeleteComment = (commentId: string) => {
-    console.log("Delete comment with ID:", commentId);
+    handleDelete({ commentId });
+    mutate({ postId });
+
   };
 
   if (comments) {
     return (
       <div className="flex flex-col items-center">
-        <Card className="max-w-2xl w-full shadow-lg p-4 bg-default-100 mb-6">
-          <div className="mb-4">
-            <h3 className="text-lg text-center font-semibold">Comments</h3>
-          </div>
-
+        <Card className="max-w-2xl w-full rounded-t-none shadow-lg p-4 bg-default-100 mb-6">
           {/* Comments List */}
           {comments.map((comment: IComment) => (
             <Card key={comment._id} className="mb-4 p-2">
@@ -135,8 +138,8 @@ export default function CommentsPage() {
                   <h4 className="font-semibold">{comment?.userId?.name}</h4>
                 </div>
               </CardHeader>
-              <CardBody className="p-4">{comment.comment}</CardBody>
-              <CardFooter>
+              <CardBody className="px-4">{comment.comment}</CardBody>
+              <CardFooter className="py-0">
                 <span
                   className="cursor-pointer p-2"
                   onClick={() => handleEditComment(comment._id)}
@@ -206,4 +209,5 @@ export default function CommentsPage() {
   }
 
   return null;
-}
+};
+export default CommentsPage;

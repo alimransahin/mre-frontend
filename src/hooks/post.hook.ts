@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import {
+  deleteUserComment,
   getUserSinglePost,
   UpdateUserComment,
   userComment,
@@ -51,12 +52,26 @@ export const useGetSinglePost = () => {
 };
 export const useUpdateComment = () => {
   return useMutation<any, Error, { data: FieldValues; commentId: string }>({
-    mutationKey: ["Update_Profile"],
+    mutationKey: ["Update_Comment"],
     mutationFn: async ({ data, commentId }) => {
       return await UpdateUserComment(data, commentId);
     },
     onSuccess: () => {
       toast.success("Comment updated successfully");
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+export const useDeleteComment = () => {
+  return useMutation<any, Error, { commentId: string }>({
+    mutationKey: ["Delete_Comment"],
+    mutationFn: async ({ commentId }) => {
+      return await deleteUserComment(commentId);
+    },
+    onSuccess: () => {
+      toast.success("Comment Deleted successfully");
     },
     onError: (error) => {
       toast.error(error?.message);
