@@ -3,6 +3,7 @@ import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import {
   getUserSinglePost,
+  UpdateUserComment,
   userComment,
   userPost,
   userUpvote,
@@ -43,6 +44,20 @@ export const useGetSinglePost = () => {
   return useMutation<any, Error, { postId: string }>({
     mutationKey: ["Get_User_Comment"],
     mutationFn: async ({ postId }) => await getUserSinglePost(postId),
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+export const useUpdateComment = () => {
+  return useMutation<any, Error, { data: FieldValues; commentId: string }>({
+    mutationKey: ["Update_Profile"],
+    mutationFn: async ({ data, commentId }) => {
+      return await UpdateUserComment(data, commentId);
+    },
+    onSuccess: () => {
+      toast.success("Comment updated successfully");
+    },
     onError: (error) => {
       toast.error(error?.message);
     },

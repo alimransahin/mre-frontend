@@ -37,7 +37,22 @@ export const getUserSinglePost = async (postId: string) => {
     );
   }
 };
-
+export const UpdateUserComment = async (
+  userData: FieldValues,
+  commentId: string
+) => {
+  try {
+    console.log("commentId:", userData, commentId);
+    const { data } = await axiosInstance.put(
+      `/comment/update-comment/${commentId}`,
+      userData
+    );
+    return data;
+  } catch (error: any) {
+    console.error("Update failed:", error);
+    throw new Error(error);
+  }
+};
 //
 //
 //
