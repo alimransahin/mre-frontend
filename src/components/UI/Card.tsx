@@ -10,7 +10,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import html2pdf from "html2pdf.js";
 import { toast } from "sonner";
 import { useUser } from "@/src/context/UserProvider";
 import { useUserUpvote } from "@/src/hooks/post.hook";

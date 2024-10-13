@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Skeleton } from "@nextui-org/skeleton";
 import { useGetAllActivity } from "@/src/hooks/auth.hook";
 
-const loginActivity = () => {
+const LoginActivity = () => {
   const { mutate: handleGetAllActivity, data } = useGetAllActivity();
 
   useEffect(() => {
@@ -95,4 +95,4 @@ const loginActivity = () => {
   );
 };
 
-export default loginActivity;
+export default LoginActivity;

@@ -6,7 +6,6 @@ import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { useUser } from "@/src/context/UserProvider";
 import { useUserUpvote } from "@/src/hooks/post.hook";
 import { toast } from "sonner";
-import html2pdf from "html2pdf.js";
 import { useRouter } from "next/navigation";
 import { useUpdateFollow } from "@/src/hooks/auth.hook";
 import Link from "next/link";
@@ -84,7 +83,24 @@ const PostDetails: React.FC<CommentsPageProps> = ({ postId }) => {
       });
     }
   };
+  const handleShare = async (postId: string) => {
+    const postUrl = `${window.location.origin}/post-details/${postId}`;
+    const title = post?.user?.name || "Check out this post!";
 
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          url: postUrl,
+        });
+        toast.success("Post shared successfully!");
+      } catch (error) {
+        toast.error("Failed to share the post");
+      }
+    } else {
+      toast.info("Sharing is not supported on this browser");
+    }
+  };
   if (!post) return <Loading />;
 
   return (
@@ -166,9 +182,12 @@ const PostDetails: React.FC<CommentsPageProps> = ({ postId }) => {
           >
             <MessageSquareMore className="mx-auto" /> Comment
           </button>
-          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200">
+          <button
+            onClick={() => handleShare(post._id)}
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+          >
             <Forward className="mx-auto" /> Share
-          </span>
+          </button>
         </CardFooter>
       </Card>
     </div>

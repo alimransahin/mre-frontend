@@ -1,14 +1,3 @@
-export default function layout({
-  children,
-  userPosts,
-}: {
-  children: React.ReactNode;
-  userPosts: React.ReactNode;
-}) {
-  return (
-    <>
-      {children}
-      {userPosts}
-    </>
-  );
+export default function layout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }
