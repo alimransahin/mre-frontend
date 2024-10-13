@@ -3,6 +3,7 @@
 import { Button } from "@nextui-org/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
 import { useChangePassword } from "@/src/hooks/auth.hook";
@@ -18,6 +19,7 @@ const ChangePassword = () => {
       ...data,
       email: user?.email,
     };
+
     handleChangePassword(newData);
   };
 
@@ -29,23 +31,23 @@ const ChangePassword = () => {
         <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
         <div className="w-[35%]">
           <MraForm
-            onSubmit={onSubmit}
             resolver={zodResolver(changePasswordValidationSchema)}
+            onSubmit={onSubmit}
           >
             <div className="py-3">
-              <MraInput name="password" label="Old Password" type="password" />
+              <MraInput label="Old Password" name="password" type="password" />
             </div>
             <div className="py-3">
               <MraInput
-                name="newPassword"
                 label="New Password"
+                name="newPassword"
                 type="password"
               />
             </div>
             <div className="py-3">
               <MraInput
-                name="con_newPassword"
                 label="Confirm New Password"
+                name="con_newPassword"
                 type="password"
               />
             </div>

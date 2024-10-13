@@ -8,10 +8,12 @@ import {
   useEffect,
   useState,
 } from "react";
+
 import { TUser } from "../types";
 import { getActiveUser } from "../services/AuthService";
 
 const UserContext = createContext<IUserProvider | undefined>(undefined);
+
 interface IUserProvider {
   user: TUser | null;
   isLoading: boolean;

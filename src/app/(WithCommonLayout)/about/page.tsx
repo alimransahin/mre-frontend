@@ -1,5 +1,6 @@
-import { TwitterIcon } from "@/src/components/icons";
 import { Facebook, Instagram } from "lucide-react";
+
+import { TwitterIcon } from "@/src/components/icons";
 
 const teamMembers = [
   {
@@ -58,10 +59,10 @@ const AboutUs = () => {
         </p>
         <p>
           In a world where communication can often feel fragmented, MRA aims to
-          create a seamless experience that brings people together. Whether it's
-          connecting with friends, engaging with communities, or sharing
-          valuable insights, our platform is designed to enhance the way you
-          interact online.
+          create a seamless experience that brings people together. Whether
+          it`&apos;`s connecting with friends, engaging with communities, or
+          sharing valuable insights, our platform is designed to enhance the way
+          you interact online.
         </p>
       </section>
 
@@ -111,9 +112,9 @@ const AboutUs = () => {
               className="bg-default-100 shadow-lg rounded-lg p-4 text-center"
             >
               <img
-                src={member.imageUrl}
                 alt={member.name}
                 className="w-full h-48 object-cover rounded-t-lg"
+                src={member.imageUrl}
               />
               <h3 className="text-xl font-semibold mt-4">{member.name}</h3>
               <h4 className="text-default-600">{member.title}</h4>
@@ -131,7 +132,7 @@ const AboutUs = () => {
         </p>
         <p>
           Email:{" "}
-          <a href="mailto:support@mraapp.com" className="text-blue-600">
+          <a className="text-blue-600" href="mailto:support@mraapp.com">
             support@mraapp.com
           </a>
         </p>
@@ -139,17 +140,17 @@ const AboutUs = () => {
         <p>Follow us on social media for updates:</p>
         <ul className=" flex">
           <li>
-            <a href="https://twitter.com/mraapp" className="text-blue-600">
+            <a className="text-blue-600" href="https://twitter.com/mraapp">
               <TwitterIcon size={36} />
             </a>
           </li>
           <li>
-            <a href="https://facebook.com/mraapp" className="text-blue-600">
+            <a className="text-blue-600" href="https://facebook.com/mraapp">
               <Facebook size={36} />
             </a>
           </li>
           <li>
-            <a href="https://instagram.com/mraapp" className="text-blue-600">
+            <a className="text-blue-600" href="https://instagram.com/mraapp">
               <Instagram size={36} />
             </a>
           </li>

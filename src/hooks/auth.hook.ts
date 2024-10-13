@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+
 import {
   changePassword,
   forgetPassword,
@@ -46,7 +47,6 @@ export const useChangePassword = () => {
       toast.success("Password Updated successfull");
     },
     onError: (error) => {
-      console.error(error);
       toast.error(error?.message);
     },
   });
@@ -73,7 +73,6 @@ export const useResetPassword = () => {
       toast.success("Password Updated successfull");
     },
     onError: (error) => {
-      console.error(error);
       toast.error(error?.message);
     },
   });
@@ -84,8 +83,7 @@ export const useGetCurrentUser = () => {
     mutationKey: ["Get_User_Info"],
     mutationFn: async (data) => await getCurrentUser(data.email), // Assuming 'email' is part of the form values
 
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
       toast.error("Something wants wrong!");
     },
   });

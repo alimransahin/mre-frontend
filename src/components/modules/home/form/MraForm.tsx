@@ -31,7 +31,6 @@ export default function MraForm({
 
   const methods = useForm(formConfig);
 
-
   const submitHandler = methods.handleSubmit;
 
   return (

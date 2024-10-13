@@ -1,8 +1,9 @@
 "use client";
-import { useUser } from "@/src/context/UserProvider";
-import { NavbarItem } from "@nextui-org/navbar";
-import NavbarDropDown from "./NavbarDropDown";
 import Link from "next/link";
+
+import NavbarDropDown from "./NavbarDropDown";
+
+import { useUser } from "@/src/context/UserProvider";
 
 const UserProfile = () => {
   const { user } = useUser();

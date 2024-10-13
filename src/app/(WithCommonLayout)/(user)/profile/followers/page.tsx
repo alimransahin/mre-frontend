@@ -1,8 +1,9 @@
 "use client";
-import { useUser } from "@/src/context/UserProvider";
-import { useGetCurrentUser } from "@/src/hooks/auth.hook";
 import React, { useEffect } from "react";
 import { Skeleton } from "@nextui-org/skeleton";
+
+import { useUser } from "@/src/context/UserProvider";
+import { useGetCurrentUser } from "@/src/hooks/auth.hook";
 
 const FollowersPage = () => {
   const { mutate: handleGetUser, data } = useGetCurrentUser();
@@ -49,12 +50,12 @@ const FollowersPage = () => {
                     <td className="py-3 px-5">{index + 1}</td>
                     <td className="py-3 px-5">
                       <img
+                        alt={follower.name}
+                        className="w-10 h-10 rounded-full"
                         src={
                           follower.profilePicture ||
                           "/path/to/default/image.jpg"
                         }
-                        alt={follower.name}
-                        className="w-10 h-10 rounded-full"
                       />
                     </td>
                     <td className="py-3 px-5">{follower.name}</td>
@@ -63,7 +64,7 @@ const FollowersPage = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center text-gray-500">
+                  <td className="py-4 text-center text-gray-500" colSpan={4}>
                     No followers found.
                   </td>
                 </tr>

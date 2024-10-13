@@ -5,17 +5,20 @@ import {
   Forward,
   Download,
 } from "lucide-react";
-
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 
-export default async function RecentPosts() {
+export default function RecentPosts() {
+  // No async needed here
   const skeletonCards = Array(3).fill(0); // Create an array of 3 elements
 
   return (
     <div className="flex flex-col items-center space-y-6">
       {skeletonCards.map((_, index) => (
-        <Card key={index} className="max-w-2xl shadow-lg p-4 bg-default-100">
+        <Card
+          key={index}
+          className="max-w-2xl w-full shadow-lg p-4 bg-default-100"
+        >
           <div>
             <CardHeader className="p-0 flex items-center gap-3">
               <Skeleton className="w-10 h-10 rounded-full" />

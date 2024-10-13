@@ -1,8 +1,9 @@
 "use server";
-import axiosInstance from "@/src/lib/AxiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+
+import axiosInstance from "@/src/lib/AxiosInstance";
 
 export const signUpUser = async (userData: FieldValues) => {
   try {
@@ -12,6 +13,7 @@ export const signUpUser = async (userData: FieldValues) => {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
     }
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -26,6 +28,7 @@ export const loginUser = async (userData: FieldValues) => {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
     }
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -40,6 +43,7 @@ export const logOut = () => {
 export const changePassword = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/auth/password", userData);
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -50,8 +54,9 @@ export const forgetPassword = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post(
       "/auth/forget-password",
-      userData
+      userData,
     );
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -61,6 +66,7 @@ export const forgetPassword = async (userData: FieldValues) => {
 export const resetPassword = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/auth/reset-password", userData);
+
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -70,37 +76,37 @@ export const resetPassword = async (userData: FieldValues) => {
 export const getCurrentUser = async (email: string) => {
   try {
     const { data } = await axiosInstance.get(`/user/${email}`);
+
     return data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || "Failed to retrieve user information"
+      error.response?.data?.message || "Failed to retrieve user information",
     );
   }
 };
 export const UpdateUserProfile = async (
   userData: FieldValues,
-  userId: string
+  userId: string,
 ) => {
   try {
     const { data } = await axiosInstance.put(
       `/user/update-profile/${userId}`,
-      userData
+      userData,
     );
+
     return data;
   } catch (error: any) {
-    console.error("Update failed:", error);
     throw new Error(error);
   }
 };
 export const UpdateUserFollow = async (authId: string, userId: string) => {
-  console.log("userId", userId);
   try {
     const { data } = await axiosInstance.put(`/user/follow/${authId}`, {
       userId,
     });
+
     return data;
   } catch (error: any) {
-    console.error("Follow failed:", error);
     throw new Error(error);
   }
 };
@@ -111,6 +117,7 @@ export const getActiveUser = async () => {
 
   if (accessToken) {
     decodedToken = await jwtDecode(accessToken);
+
     return {
       _id: decodedToken._id,
       name: decodedToken.name,
@@ -119,5 +126,6 @@ export const getActiveUser = async () => {
       isBlock: decodedToken.isBlock,
     };
   }
+
   return decodedToken;
 };

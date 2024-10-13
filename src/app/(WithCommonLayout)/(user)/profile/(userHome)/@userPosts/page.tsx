@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import { getAllPost } from "@/src/services/RecentPost";
 import Container from "@/src/components/UI/Container";
 import PostCard from "@/src/components/UI/Card";
@@ -14,8 +15,9 @@ const UserPost = () => {
       if (user) {
         const { data: allPosts } = await getAllPost();
         const filteredPosts = allPosts.filter(
-          (post: any) => post.user.email === user?.email
+          (post: any) => post.user.email === user?.email,
         );
+
         setUserPosts(filteredPosts);
       }
     };

@@ -5,7 +5,6 @@ import {
   Forward,
   Download,
 } from "lucide-react";
-
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 

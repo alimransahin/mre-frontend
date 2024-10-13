@@ -2,10 +2,11 @@
 
 import { Button } from "@nextui-org/button";
 import { useForm } from "react-hook-form";
-import { useGetCurrentUser, useUpdateProfile } from "@/src/hooks/auth.hook";
-import { useUser } from "@/src/context/UserProvider";
 import { useEffect } from "react";
 import { Input } from "@nextui-org/input";
+
+import { useGetCurrentUser, useUpdateProfile } from "@/src/hooks/auth.hook";
+import { useUser } from "@/src/context/UserProvider";
 
 const UpdateProfile = () => {
   const { user } = useUser();
@@ -25,7 +26,7 @@ const UpdateProfile = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {},
     reset,
     watch,
   } = useForm({
@@ -56,48 +57,48 @@ const UpdateProfile = () => {
       <h3 className="my-2 text-2xl font-bold">Update Profile</h3>
       <div className="w-full">
         <form
-          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col space-y-4"
+          onSubmit={handleSubmit(onSubmit)}
         >
           <Input
             {...register("name", {})}
-            type="text"
-            placeholder="Name"
-            variant="bordered"
-            size="md"
             fullWidth
             isClearable
-            value={watch("name")}
             label="Name"
+            placeholder="Name"
+            size="md"
+            type="text"
+            value={watch("name")}
+            variant="bordered"
           />
           <Input
             {...register("phone", {})}
-            type="text"
-            placeholder="Phone"
-            variant="bordered"
-            size="md"
             fullWidth
             isClearable
-            value={watch("phone")}
             label="Phone"
+            placeholder="Phone"
+            size="md"
+            type="text"
+            value={watch("phone")}
+            variant="bordered"
           />
           <Input
             {...register("address", {})}
-            type="text"
-            placeholder="Address"
-            variant="bordered"
-            size="md"
             fullWidth
             isClearable
-            value={watch("address")}
             label="Address"
+            placeholder="Address"
+            size="md"
+            type="text"
+            value={watch("address")}
+            variant="bordered"
           />
 
           <Button
             className="my-3 w-full rounded-md bg-default-900 font-semibold text-default"
+            isLoading={isPending}
             size="lg"
             type="submit"
-            isLoading={isPending}
           >
             Update Profile
           </Button>

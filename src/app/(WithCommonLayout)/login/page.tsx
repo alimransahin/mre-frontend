@@ -3,15 +3,15 @@
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
 import loginValidationSchema from "@/src/schemas/login.schema";
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
 import { useUserLogin } from "@/src/hooks/auth.hook";
 import Loading from "@/src/components/UI/Loading";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import { useUser } from "@/src/context/UserProvider";
 
 const LoginPage = () => {
@@ -25,6 +25,7 @@ const LoginPage = () => {
     handleLogin(data);
     userLoading(true);
   };
+
   useEffect(() => {
     if (!isPending && isSuccess) {
       if (redirect) {
@@ -34,6 +35,7 @@ const LoginPage = () => {
       }
     }
   }, [isPending, isSuccess]);
+
   return (
     <>
       {isPending && <Loading />}
@@ -42,14 +44,14 @@ const LoginPage = () => {
         <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
         <div className="w-[35%]">
           <MraForm
-            onSubmit={onSubmit}
             resolver={zodResolver(loginValidationSchema)}
+            onSubmit={onSubmit}
           >
             <div className="py-3">
-              <MraInput name="email" label="Email" type="email" />
+              <MraInput label="Email" name="email" type="email" />
             </div>
             <div className="py-3">
-              <MraInput name="password" label="Password" type="password" />
+              <MraInput label="Password" name="password" type="password" />
             </div>
 
             <Button

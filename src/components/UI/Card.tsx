@@ -11,10 +11,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
-import { useUser } from "@/src/context/UserProvider";
-import { useUserUpvote } from "@/src/hooks/post.hook";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+
+import { useUser } from "@/src/context/UserProvider";
+import { useUserUpvote } from "@/src/hooks/post.hook";
 import { useUpdateFollow } from "@/src/hooks/auth.hook";
 
 interface PostCardProps {
@@ -25,6 +26,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   const { user } = useUser();
   const description = post?.description;
   let smallDescription;
+
   if (paramsId === post._id) {
     smallDescription = description;
   } else {
@@ -40,6 +42,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   // Upvote and downvote handlers
   const onUpvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Upvote" };
+
     handleUpvote(data);
 
     setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
@@ -49,6 +52,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
 
   const onDownvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Downvote" };
+
     handleUpvote(data);
     setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
     setDownvotes((prev: number) => prev + 1);
@@ -71,46 +75,27 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   // comment
   const router = useRouter();
   const handleComment = () => {
-    if (paramsId === post._id) {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-    } else {
-      router.push(`/post-details/${post._id}`);
-    }
+    // Check if we are on the client side
+    // if (typeof window !== "undefined") {
+    //   if (paramsId === post._id) {
+    //     window.scrollTo({
+    //       top: document.documentElement.scrollHeight,
+    //       behavior: "smooth",
+    //     });
+    //   } else {
+    //     router.push(`/post-details/${post._id}`);
+    //   }
+    // } else {
+    //   // Handle the case where `window` is not available (e.g., server-side rendering)
+    //   console.warn(
+    //     "Window is not defined. This is likely running on the server."
+    //   );
+    // }
   };
-  // follow
-  // const followStatus = post?.user?.followers;
-  // const [follow, setFollow] = useState(followStatus.includes(user?._id)); // Default to false
-  // const { mutate: handleFollow, isPending } = useUpdateFollow();
 
-  // useEffect(() => {
-  //   if (Array.isArray(followStatus) && followStatus.includes(user?._id)) {
-  //     setFollow(true);
-  //   } else {
-  //     setFollow(false);
-  //   }
-  // }, [user?._id, followStatus]);
-  // const onFollowClick = async () => {
-  //   if (!user?._id) {
-  //     console.error("User ID is undefined");
-  //     toast.error("User is not authenticated");
-  //     return; // Stop execution if user ID is not available
-  //   }
-
-  //   try {
-  //     await handleFollow({ authId: post.user._id, userId: user._id });
-  //     setFollow(!follow);
-  //   } catch (error) {
-  //     console.error("Error updating follow status:", error);
-  //     toast.error("Failed to update follow status");
-  //   }
-  // };
-  // console.log(follow);
   const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
   const [follow, setFollow] = useState(false); // Initialize to false by default
-  const { mutate: handleFollow, isPending } = useUpdateFollow();
+  const { mutate: handleFollow } = useUpdateFollow();
 
   useEffect(() => {
     // Check if followStatus is an array and user._id exists
@@ -121,8 +106,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
 
   const onFollowClick = async () => {
     if (!user?._id) {
-      console.error("User ID is undefined");
       toast.error("User is not authenticated");
+
       return; // Stop execution if user ID is not available
     }
 
@@ -130,7 +115,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
       await handleFollow({ authId: post.user._id, userId: user._id });
       setFollow(!follow); // Toggle follow state
     } catch (error) {
-      console.error("Error updating follow status:", error);
       toast.error("Failed to update follow status");
     }
   };
@@ -144,9 +128,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
           {/* Header Section */}
           <CardHeader className="p-0">
             <img
-              src={post?.user?.profilePicture}
               alt="Profile"
               className="w-10 h-10 rounded-full mr-3"
+              src={post?.user?.profilePicture}
             />
             <div className="flex items-center">
               <div>
@@ -154,12 +138,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
                   <h4 className=" font-semibold inline-block">
                     {post?.user?.name}
                   </h4>
-                  <p
-                    onClick={onFollowClick}
+                  <button
                     className="text-blue-500 text-sm font-semibold cursor-pointer inline-block"
+                    onClick={onFollowClick}
                   >
                     {follow ? "Unfollow" : "Follow"}
-                  </p>
+                  </button>
                 </div>
                 <p className="text-blue-500 text-sm">{post.category}</p>
                 <p className="text-default-500 text-sm">
@@ -178,24 +162,24 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
           <CardBody className="p-0 py-3">
             <div>
               <span
-                className="custom-description"
                 dangerouslySetInnerHTML={{ __html: smallDescription }}
-              ></span>
+                className="custom-description"
+              />
               {description?.length > 300 && paramsId != post._id && (
                 <Link
-                  href={`/post-details/${post._id}`}
                   className="text-primary-600 inline ml-1"
+                  href={`/post-details/${post._id}`}
                 >
                   See More
                 </Link>
               )}
             </div>
             <Image
-              src={post.image}
               alt="Post Image"
-              width={500}
-              height={280}
               className="object-cover w-full"
+              height={280}
+              src={post.image}
+              width={500}
             />
           </CardBody>
           <CardBody className="p-4 flex flex-row justify-between">
@@ -208,34 +192,34 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
         </div>
         {/* Footer Buttons */}
         <CardFooter className="border-t border-gray-200 p-2 flex justify-around">
-          <span
-            onClick={() => onUpvote(post._id)}
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
+            onClick={() => onUpvote(post._id)}
           >
             <ArrowBigUp className="mx-auto" /> Upvote
-          </span>
-          <span
-            onClick={() => onDownvote(post._id)}
+          </button>
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
+            onClick={() => onDownvote(post._id)}
           >
             <ArrowBigDown className="mx-auto" /> Down vote
-          </span>
-          <span
-            onClick={handleComment}
+          </button>
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
+            onClick={handleComment}
           >
             <MessageSquareMore className="mx-auto" />
             Comment
-          </span>
+          </button>
           <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
             <Forward className="mx-auto" /> Share
           </span>
-          <span
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
             onClick={handleGeneratePdf}
           >
             <Download className="mx-auto" /> Save
-          </span>
+          </button>
         </CardFooter>
       </Card>
     </div>

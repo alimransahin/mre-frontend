@@ -4,6 +4,8 @@ import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
 import {
   useDeleteComment,
   useGetSinglePost,
@@ -11,7 +13,6 @@ import {
   useUserComment,
 } from "@/src/hooks/post.hook";
 import { useUser } from "@/src/context/UserProvider";
-import { toast } from "sonner";
 
 interface IComment {
   _id: string;
@@ -25,7 +26,33 @@ interface CommentsPageProps {
   postId: string;
 }
 const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
+  const { register, handleSubmit, reset } = useForm();
+  const [newComment, setNewComment] = useState("");
+  const [currentComment, setCurrentComment] = useState<IComment | null>(null);
+  const { mutate: handleComment } = useUserComment();
+  const {
+    register: updateRegister,
+    handleSubmit: handleEditSubmit,
+    formState: {},
+    reset: editReset,
+    watch,
+  } = useForm<{ comment: string }>({
+    defaultValues: {
+      comment: "",
+    },
+  });
+
+  useEffect(() => {
+    if (currentComment) {
+      editReset({
+        comment: currentComment.comment,
+      });
+    }
+  }, [currentComment, editReset]);
+  const { user } = useUser();
   const { data: sampleComments, error, mutate } = useGetSinglePost();
+  const { mutate: handleEdit } = useUpdateComment();
+  const { mutate: handleDelete } = useDeleteComment();
 
   useEffect(() => {
     if (postId) {
@@ -39,10 +66,6 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
 
   const comments = sampleComments?.data?.comments;
   // create comment
-  const { register, handleSubmit, reset } = useForm();
-  const { user } = useUser();
-  const [newComment, setNewComment] = useState("");
-  const { mutate: handleComment } = useUserComment();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -59,47 +82,28 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
       setNewComment("");
       mutate({ postId });
     } catch (error) {
-      console.error("Error posting comment:", error);
       toast.error("Failed to post comment");
     }
   };
   // update comment
-  const { mutate: handleEdit, isPending } = useUpdateComment();
-  const [currentComment, setCurrentComment] = useState<IComment | null>(null);
-
-  const {
-    register: updateRegister,
-    handleSubmit: handleEditSubmit,
-    formState: { errors },
-    reset: editReset,
-    watch,
-  } = useForm<{ comment: string }>({
-    defaultValues: {
-      comment: "",
-    },
-  });
 
   const handleEditComment = (commentId: string) => {
     const findCurrentComment = comments.find(
       (comment: IComment) => comment._id === commentId
     );
+
     if (findCurrentComment) {
       setCurrentComment(findCurrentComment);
 
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
+      // Check if we are in the client environment
+      // if (typeof window !== "undefined") {
+      //   window.scrollTo({
+      //     top: document.documentElement.scrollHeight,
+      //     behavior: "smooth",
+      //   });
+      // }
     }
   };
-
-  useEffect(() => {
-    if (currentComment) {
-      editReset({
-        comment: currentComment.comment,
-      });
-    }
-  }, [currentComment, editReset]);
 
   const onSubmitEdit = async (formData: any) => {
     try {
@@ -109,16 +113,14 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
       setCurrentComment(null);
       mutate({ postId });
     } catch (error) {
-      console.error("Error updating comment:", error);
       toast.error("Failed to update comment");
     }
   };
   // delete comment
-  const { mutate: handleDelete } = useDeleteComment();
+
   const handleDeleteComment = (commentId: string) => {
     handleDelete({ commentId });
     mutate({ postId });
-
   };
 
   if (comments) {
@@ -130,9 +132,9 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
             <Card key={comment._id} className="mb-4 p-2">
               <CardHeader className="p-0 flex items-center gap-3">
                 <img
-                  src={comment?.userId?.profilePicture}
                   alt="Profile"
                   className="w-10 h-10 rounded-full"
+                  src={comment?.userId?.profilePicture}
                 />
                 <div className="flex flex-col gap-1">
                   <h4 className="font-semibold">{comment?.userId?.name}</h4>
@@ -140,18 +142,18 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
               </CardHeader>
               <CardBody className="px-4">{comment.comment}</CardBody>
               <CardFooter className="py-0">
-                <span
+                <button
                   className="cursor-pointer p-2"
                   onClick={() => handleEditComment(comment._id)}
                 >
                   Edit
-                </span>
-                <span
+                </button>
+                <button
                   className="cursor-pointer p-2"
                   onClick={() => handleDeleteComment(comment._id)}
                 >
                   Delete
-                </span>
+                </button>
               </CardFooter>
             </Card>
           ))}
@@ -165,15 +167,15 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
                 </CardHeader>
                 <CardBody className="p-4 ">
                   <Input
-                    placeholder="Update your comment here..."
                     fullWidth
+                    placeholder="Update your comment here..."
                     {...updateRegister("comment", { required: true })}
-                    value={watch("comment")}
                     className="border-3 border-default-200 rounded-2xl"
+                    value={watch("comment")}
                   />
                 </CardBody>
                 <CardFooter className="p-0">
-                  <Button type="submit" className="mt-4" fullWidth>
+                  <Button fullWidth className="mt-4" type="submit">
                     Update Comment
                   </Button>
                 </CardFooter>
@@ -187,16 +189,16 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
                 </CardHeader>
                 <CardBody className="p-4 ">
                   <Input
-                    placeholder="Type your comment here..."
                     fullWidth
+                    placeholder="Type your comment here..."
                     {...register("comment", { required: true })}
+                    className="border-3 border-default-200 rounded-2xl"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    className="border-3 border-default-200 rounded-2xl"
                   />
                 </CardBody>
                 <CardFooter className="p-0">
-                  <Button type="submit" className="mt-4" fullWidth>
+                  <Button fullWidth className="mt-4" type="submit">
                     Post Comment
                   </Button>
                 </CardFooter>
@@ -210,4 +212,5 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
 
   return null;
 };
+
 export default CommentsPage;

@@ -1,8 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useUser } from "@/src/context/UserProvider";
-import { logOut } from "@/src/services/AuthService";
 import {
   Dropdown,
   DropdownItem,
@@ -11,12 +9,16 @@ import {
 } from "@nextui-org/dropdown";
 import { Avatar } from "@nextui-org/avatar";
 import Link from "next/link";
-import { useGetCurrentUser } from "@/src/hooks/auth.hook";
 import { useEffect } from "react";
+
+import { useGetCurrentUser } from "@/src/hooks/auth.hook";
+import { logOut } from "@/src/services/AuthService";
+import { useUser } from "@/src/context/UserProvider";
 
 const NavbarDropDown = () => {
   const { user } = useUser();
   const { mutate: handleGetUser, data } = useGetCurrentUser();
+
   useEffect(() => {
     if (user?.email) {
       handleGetUser({ email: user.email });
@@ -38,31 +40,31 @@ const NavbarDropDown = () => {
       <DropdownTrigger>
         {currentUser?.profilePicture ? (
           <Avatar
-            className="cursor-pointer"
             showFallback
+            className="cursor-pointer"
             src={currentUser?.profilePicture}
           />
         ) : (
           <Avatar
-            className="cursor-pointer"
             showFallback
+            className="cursor-pointer"
             src="https://images.unsplash.com/broken"
           />
         )}
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem key="profile" className="w-full">
-          <Link href="/profile" className="w-full block">
+          <Link className="w-full block" href="/profile">
             Profile
           </Link>
         </DropdownItem>
         <DropdownItem key="settings" className="w-full">
-          <Link href="/profile/settings" className="w-full block">
+          <Link className="w-full block" href="/profile/settings">
             Settings
           </Link>
         </DropdownItem>
         <DropdownItem key="create-post" className="w-full">
-          <Link href="/profile/create-post" className="w-full block">
+          <Link className="w-full block" href="/profile/create-post">
             Create Post
           </Link>
         </DropdownItem>

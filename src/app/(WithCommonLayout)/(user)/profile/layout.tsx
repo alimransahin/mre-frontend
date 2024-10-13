@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
+import { PanelRightClose, PanelRightOpen } from "lucide-react";
+
 import Sidebar from "@/src/components/UI/Sidebar";
 import Container from "@/src/components/UI/Container";
-import { PanelRightClose, PanelRightOpen } from "lucide-react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

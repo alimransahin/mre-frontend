@@ -1,6 +1,7 @@
+import { NextPage } from "next";
+
 import CommentsPage from "@/src/components/UI/post/Comment";
 import PostDetails from "@/src/components/UI/post/PostDetails";
-import { NextPage } from "next";
 
 interface Params {
   postId: string;
@@ -10,8 +11,6 @@ interface DynamicPostPageProps {
 }
 
 const DynamicPostPage: NextPage<DynamicPostPageProps> = ({ params }) => {
-
-
   return (
     <>
       <PostDetails postId={params.postId} />
@@ -19,4 +18,5 @@ const DynamicPostPage: NextPage<DynamicPostPageProps> = ({ params }) => {
     </>
   );
 };
+
 export default DynamicPostPage;

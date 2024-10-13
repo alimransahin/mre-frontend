@@ -2,25 +2,22 @@
 
 import { Button } from "@nextui-org/button";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
 import { useForgetPassword } from "@/src/hooks/auth.hook";
 import Loading from "@/src/components/UI/Loading";
-
 import { useUser } from "@/src/context/UserProvider";
 
 const ForgetPassword = () => {
-  const {
-    mutate: handleForgetPasword,
-    isPending,
-    isSuccess,
-  } = useForgetPassword();
+  const { mutate: handleForgetPasword, isPending } = useForgetPassword();
   const { setIsLoading: userLoading } = useUser();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     handleForgetPasword(data);
     userLoading(true);
   };
+
   return (
     <>
       {isPending && <Loading />}
@@ -29,7 +26,7 @@ const ForgetPassword = () => {
         <div className="w-[35%]">
           <MraForm onSubmit={onSubmit}>
             <div className="py-3">
-              <MraInput name="email" label="Email" type="email" />
+              <MraInput label="Email" name="email" type="email" />
             </div>
             <Button
               className="my-3 w-full rounded-md bg-default-900 font-semibold text-default"

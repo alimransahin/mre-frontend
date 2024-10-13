@@ -3,7 +3,8 @@
 import React from "react";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
-import { usePayment, useUpdateProfile } from "@/src/hooks/auth.hook";
+
+import { usePayment } from "@/src/hooks/auth.hook";
 import { useUser } from "@/src/context/UserProvider";
 
 const SubscriptionPage = () => {
@@ -41,11 +42,12 @@ const SubscriptionPage = () => {
   const { mutate: handlePayment } = usePayment();
   const onSubmit = async (plan: { price: number }) => {
     try {
-      const currentPageLink = window.location.href;
+      const currentPageLink = "localhost:5000";
       const paymentData = {
         subscriptionPrice: plan.price,
         currentPageLink: currentPageLink,
       };
+
       userId && handlePayment({ data: paymentData, userId });
     } catch (error) {
       toast.error("Failed to make Payment: ");

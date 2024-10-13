@@ -4,6 +4,7 @@ import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
 import signUpValidationSchema from "@/src/schemas/signup.schema";
@@ -24,28 +25,28 @@ const SignUpPage = () => {
         <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
         <div className="w-[35%]">
           <MraForm
-            onSubmit={onSubmit}
             resolver={zodResolver(signUpValidationSchema)}
+            onSubmit={onSubmit}
           >
             <div className="py-3">
-              <MraInput name="name" label="Name" />
+              <MraInput label="Name" name="name" />
             </div>
             <div className="py-3">
-              <MraInput name="phone" label="Phone Number" />
+              <MraInput label="Phone Number" name="phone" />
             </div>
             <div className="py-3">
-              <MraInput name="email" label="Email" type="email" />
+              <MraInput label="Email" name="email" type="email" />
             </div>
             <div className="py-3">
-              <MraInput name="address" label="Address" />
+              <MraInput label="Address" name="address" />
             </div>
             <div className="py-3">
-              <MraInput name="password" label="Password" type="password" />
+              <MraInput label="Password" name="password" type="password" />
             </div>
             <div className="py-3">
               <MraInput
-                name="con_password"
                 label="Confirm Password"
+                name="con_password"
                 type="password"
               />
             </div>
