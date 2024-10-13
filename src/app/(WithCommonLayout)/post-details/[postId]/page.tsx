@@ -14,7 +14,7 @@ const DynamicPostPage: NextPage<DynamicPostPageProps> = ({ params }) => {
   return (
     <>
       <PostDetails postId={params.postId} />
-      <CommentsPage postId={params.postId} />;
+      <CommentsPage postId={params.postId} />
     </>
   );
 };

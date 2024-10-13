@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 import { useUser } from "@/src/context/UserProvider";
 import { useUserUpvote } from "@/src/hooks/post.hook";
 import { useUpdateFollow } from "@/src/hooks/auth.hook";
@@ -20,12 +22,12 @@ interface PostCardProps {
   post: any; // You can replace `any` with a more specific type if possible
   paramsId?: string; // Optional prop
 }
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostDatailCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   const { user } = useUser();
   const description = post?.description;
   let smallDescription;
 
-  if (description <= 300) {
+  if (paramsId === post._id) {
     smallDescription = description;
   } else {
     smallDescription = description?.slice(0, 300);
@@ -71,6 +73,25 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     html2pdf().from(postRef.current).set(opt).save();
   };
   // comment
+  const router = useRouter();
+  const handleComment = () => {
+    // Check if we are on the client side
+    // if (typeof window !== "undefined") {
+    //   if (paramsId === post._id) {
+    //     window.scrollTo({
+    //       top: document.documentElement.scrollHeight,
+    //       behavior: "smooth",
+    //     });
+    //   } else {
+    //     router.push(`/post-details/${post._id}`);
+    //   }
+    // } else {
+    //   // Handle the case where `window` is not available (e.g., server-side rendering)
+    //   console.warn(
+    //     "Window is not defined. This is likely running on the server."
+    //   );
+    // }
+  };
 
   const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
   const [follow, setFollow] = useState(false); // Initialize to false by default
@@ -100,7 +121,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   return (
     <div className="flex justify-center ">
-      <Card className={`max-w-2xl shadow-lg p-4 bg-default-100 `}>
+      <Card
+        className={`max-w-2xl shadow-lg p-4 bg-default-100 ${paramsId === post._id && "rounded-b-none"}`}
+      >
         <div ref={postRef}>
           {/* Header Section */}
           <CardHeader className="p-0">
@@ -142,7 +165,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                 dangerouslySetInnerHTML={{ __html: smallDescription }}
                 className="custom-description"
               />
-              {description?.length > 300 && (
+              {description?.length > 300 && paramsId != post._id && (
                 <Link
                   className="text-primary-600 inline ml-1"
                   href={`/post-details/${post._id}`}
@@ -181,13 +204,13 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           >
             <ArrowBigDown className="mx-auto" /> Down vote
           </button>
-          <Link
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
-            href={`/post-details/${post._id}`}
+            onClick={handleComment}
           >
             <MessageSquareMore className="mx-auto" />
             Comment
-          </Link>
+          </button>
           <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
             <Forward className="mx-auto" /> Share
           </span>
@@ -203,4 +226,4 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   );
 };
 
-export default PostCard;
+export default PostDatailCard;

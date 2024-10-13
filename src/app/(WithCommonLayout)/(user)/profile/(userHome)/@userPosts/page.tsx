@@ -15,7 +15,7 @@ const UserPost = () => {
       if (user) {
         const { data: allPosts } = await getAllPost();
         const filteredPosts = allPosts.filter(
-          (post: any) => post.user.email === user?.email,
+          (post: any) => post.user.email === user?.email
         );
 
         setUserPosts(filteredPosts);

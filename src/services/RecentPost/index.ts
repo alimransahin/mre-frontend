@@ -6,3 +6,8 @@ export const getAllPost = async (page = 1) => {
 
   return res.json();
 };
+export const getSinglePost = async (postId: string) => {
+  const res = await fetch(`${envConfig.baseApi}/post/${postId}`);
+
+  return res.json();
+};
