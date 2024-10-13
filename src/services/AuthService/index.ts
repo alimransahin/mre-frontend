@@ -54,7 +54,7 @@ export const forgetPassword = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post(
       "/auth/forget-password",
-      userData,
+      userData
     );
 
     return data;
@@ -73,6 +73,27 @@ export const resetPassword = async (userData: FieldValues) => {
   }
 };
 
+export const getAllUser = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/user`);
+    return data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Failed to retrieve user information"
+    );
+  }
+};
+export const getAllActivity = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/activity`);
+
+    return data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Failed to retrieve activity information"
+    );
+  }
+};
 export const getCurrentUser = async (email: string) => {
   try {
     const { data } = await axiosInstance.get(`/user/${email}`);
@@ -80,19 +101,30 @@ export const getCurrentUser = async (email: string) => {
     return data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || "Failed to retrieve user information",
+      error.response?.data?.message || "Failed to retrieve user information"
     );
   }
 };
 export const UpdateUserProfile = async (
   userData: FieldValues,
-  userId: string,
+  userId: string
 ) => {
   try {
     const { data } = await axiosInstance.put(
       `/user/update-profile/${userId}`,
-      userData,
+      userData
     );
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+export const UpdateUserStatus = async (action: string, userId: string) => {
+  try {
+    const { data } = await axiosInstance.put(`/user/update-status/${userId}`, {
+      action,
+    });
 
     return data;
   } catch (error: any) {

@@ -7,7 +7,6 @@ declare module "react-to-print" {
     content: () => HTMLElement | null; // Function returning the content to print
     documentTitle?: string; // Optional title for the printed document
   }
-
   const ReactToPrint: ComponentType<ReactToPrintProps>;
   export default ReactToPrint;
 }

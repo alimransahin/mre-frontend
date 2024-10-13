@@ -5,12 +5,15 @@ import { toast } from "sonner";
 import {
   changePassword,
   forgetPassword,
+  getAllUser,
   getCurrentUser,
   loginUser,
   resetPassword,
   signUpUser,
   UpdateUserFollow,
   UpdateUserProfile,
+  UpdateUserStatus,
+  getAllActivity,
 } from "../services/AuthService";
 import { makePayment } from "../services/AuthService/Payment";
 
@@ -88,12 +91,46 @@ export const useGetCurrentUser = () => {
     },
   });
 };
+export const useGetAllUser = () => {
+  return useMutation<any, Error>({
+    mutationKey: ["Get_User_Info"],
+    mutationFn: async () => await getAllUser(), // Assuming 'email' is part of the form values
+
+    onError: () => {
+      toast.error("Something wants wrong!");
+    },
+  });
+};
+export const useGetAllActivity = () => {
+  return useMutation<any, Error>({
+    mutationKey: ["Get_User_Login_Activity"],
+    mutationFn: async () => await getAllActivity(), // Assuming 'email' is part of the form values
+
+    onError: () => {
+      toast.error("Something wants wrong!");
+    },
+  });
+};
 
 export const useUpdateProfile = () => {
   return useMutation<any, Error, { data: FieldValues; userId: string }>({
     mutationKey: ["Update_Profile"],
     mutationFn: async ({ data, userId }) => {
       return await UpdateUserProfile(data, userId);
+    },
+    onSuccess: () => {
+      toast.success("Update successful!");
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+export const useUpdateStatus = () => {
+  return useMutation<any, Error, { userId: string; action: string }>({
+    mutationKey: ["Update_User_Status"],
+    mutationFn: async ({ action, userId }) => {
+      return await UpdateUserStatus(action, userId);
     },
     onSuccess: () => {
       toast.success("Update successful!");

@@ -57,19 +57,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     isSuccess && toast.success("Downvoted");
   };
 
-  // Generate PDF function
-  const postRef = useRef(null);
-  const handleGeneratePdf = () => {
-    const opt = {
-      margin: 1,
-      filename: "myfile.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
-
-    html2pdf().from(postRef.current).set(opt).save();
-  };
   // comment
 
   const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
@@ -95,6 +82,38 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       setFollow(!follow); // Toggle follow state
     } catch (error) {
       toast.error("Failed to update follow status");
+    }
+  };
+
+  // Generate PDF function
+  const postRef = useRef(null);
+  const handleGeneratePdf = () => {
+    // const opt = {
+    //   margin: 1,
+    //   filename: "myfile.pdf",
+    //   image: { type: "jpeg", quality: 0.98 },
+    //   html2canvas: { scale: 2 },
+    //   jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    // };
+    // html2pdf().from(postRef.current).set(opt).save();
+  };
+  // share
+  const handleShare = async (postId: string) => {
+    const postUrl = `${window.location.origin}/post-details/${postId}`;
+    const title = post?.user?.name || "Check out this post!";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          url: postUrl,
+        });
+        toast.success("Post shared successfully!");
+      } catch (error) {
+        toast.error("Failed to share the post");
+      }
+    } else {
+      toast.info("Sharing is not supported on this browser");
     }
   };
 
@@ -188,9 +207,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             <MessageSquareMore className="mx-auto" />
             Comment
           </Link>
-          <span className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 ">
+          <button
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            onClick={() => handleShare(post._id)}
+          >
             <Forward className="mx-auto" /> Share
-          </span>
+          </button>
           <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
             onClick={handleGeneratePdf}

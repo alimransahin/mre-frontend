@@ -43,7 +43,6 @@ const PostDetails: React.FC<CommentsPageProps> = ({ postId }) => {
     };
     fetchData();
   }, [postId]);
-
   useEffect(() => {
     if (Array.isArray(post?.user?.followers) && user?._id) {
       setFollow(post.user.followers.includes(user._id));
