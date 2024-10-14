@@ -8,7 +8,7 @@ import {
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 
-export default async function RecentPosts() {
+export default async function LoadingPost() {
   const skeletonCards = Array(3).fill(0); // Create an array of 3 elements
 
   return (

@@ -10,18 +10,26 @@ import MraInput from "@/src/components/modules/home/form/MraInput";
 import signUpValidationSchema from "@/src/schemas/signup.schema";
 import { useUserSignup } from "@/src/hooks/auth.hook";
 import Loading from "@/src/components/UI/Loading";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const SignUpPage = () => {
-  const { mutate: handleSignUp, isPending } = useUserSignup();
+  const { mutate: handleSignUp, isPending, isSuccess } = useUserSignup();
+  const router = useRouter();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     handleSignUp(data);
   };
+  useEffect(() => {
+    if (isSuccess) {
+      router.push("/login");
+    }
+  }, [isSuccess, router]);
 
   return (
     <>
       {isPending && <Loading />}
       <div className="flex  w-full flex-col items-center justify-center">
-        <h3 className="my-2 text-2xl font-bold">Login with FoundX</h3>
+        <h3 className="my-2 text-2xl font-bold">Sign Up in MRA</h3>
         <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
         <div className="w-[35%]">
           <MraForm

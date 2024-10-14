@@ -10,6 +10,7 @@ export const makePayment = async (userData: FieldValues) => {
       `/user/${userData.userId}`,
       userData.data
     );
+    console.log(data);
 
     if (data.errors && data.errors.length > 0) {
       toast.error(data.errors[0]);
@@ -18,9 +19,10 @@ export const makePayment = async (userData: FieldValues) => {
     }
 
     if (data?.data?.payment_url) {
-      // if (window !== undefined) {
-      //   window.location.href = data.data.payment_url;
-      // }
+      if (window !== undefined) {
+        window.location.href = data.data.payment_url;
+        toast.success("Payment successfull");
+      }
     } else {
       toast.error("Payment URL not found. Please try again.");
     }

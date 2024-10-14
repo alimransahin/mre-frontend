@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-
 import loginValidationSchema from "@/src/schemas/login.schema";
 import MraForm from "@/src/components/modules/home/form/MraForm";
 import MraInput from "@/src/components/modules/home/form/MraInput";
@@ -40,7 +39,7 @@ const LoginPage = () => {
     <>
       {isPending && <Loading />}
       <div className="flex h-[calc(100vh-200px)] w-full flex-col items-center justify-center">
-        <h3 className="my-2 text-2xl font-bold">Login with FoundX</h3>
+        <h3 className="my-2 text-2xl font-bold">Login with MRA</h3>
         <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
         <div className="w-[35%]">
           <MraForm

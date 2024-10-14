@@ -54,17 +54,34 @@ const NavbarDropDown = () => {
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem key="profile" className="w-full">
-          <Link className="w-full block" href="/profile">
+          <Link
+            className="w-full block"
+            href={currentUser?.role === "user" ? "/profile" : "/admin"}
+          >
             Profile
           </Link>
         </DropdownItem>
         <DropdownItem key="settings" className="w-full">
-          <Link className="w-full block" href="/profile/settings">
+          <Link
+            className="w-full block"
+            href={
+              currentUser?.role === "user"
+                ? "/profile/setings"
+                : "/admin/setings"
+            }
+          >
             Settings
           </Link>
         </DropdownItem>
         <DropdownItem key="create-post" className="w-full">
-          <Link className="w-full block" href="/profile/create-post">
+          <Link
+            className="w-full block"
+            href={
+              currentUser?.role === "user"
+                ? "/profile/create-post"
+                : "/admin/create-post"
+            }
+          >
             Create Post
           </Link>
         </DropdownItem>

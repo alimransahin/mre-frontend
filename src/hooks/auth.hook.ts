@@ -162,7 +162,7 @@ export const usePayment = () => {
       await makePayment(data);
     },
     onSuccess: () => {
-      toast.success("Payment successfull");
+      // toast.success("Payment successfull");
     },
     onError: (error) => {
       toast.error(error?.message);

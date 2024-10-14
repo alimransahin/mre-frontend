@@ -77,7 +77,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     }
 
     try {
-      await handleFollow({ authId: post.user._id, userId: user._id });
+      const result = await handleFollow({
+        authId: post.user._id,
+        userId: user._id,
+      });
       setFollow(!follow); // Toggle follow state
     } catch (error) {
       toast.error("Failed to update follow status");
@@ -140,10 +143,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                     {follow ? "Unfollow" : "Follow"}
                   </button>
                 </div>
-                <p className="text-blue-500 text-sm">{post.category}</p>
+                <p className="text-blue-500 text-sm">
+                  {post.category} {post.isPremium && "(Premium)"}
+                </p>
                 <p className="text-default-500 text-sm">
-                  {post?.user?.createdAt &&
-                    new Date(post.user.createdAt).toLocaleDateString("en-GB", {
+                  {post?.createdAt &&
+                    new Date(post.createdAt).toLocaleDateString("en-GB", {
                       month: "long",
                       day: "numeric",
                       year: "numeric",
