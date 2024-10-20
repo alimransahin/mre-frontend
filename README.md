@@ -1,53 +1,67 @@
-# Next.js & NextUI Template
+# MRA- Tech Tips & Tricks Hub
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+Tech Tips & Tricks Hub is a full-stack web application designed to help tech enthusiasts share, discover, and discuss technology tips and tricks. The platform offers expert advice, user-generated content, and personalized experiences through authentication, premium subscriptions, and interaction features like upvoting and commenting.
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+## Features
 
-## Technologies Used
+- **User Authentication:** Secure login, registration, and password recovery.
+- **User Roles:** Users can have roles like admin and user, with permissions to perform different actions.
+- **Post Creation:** Users can create, edit, and delete tech tips and tutorials using a rich text editor.
+- **Voting & Comments:** Upvote/downvote posts and comment on content.
+- **Premium Content:** Access premium posts by subscribing via payment gateways.
+- **Search & Filter:** Search for tips using keywords and filter by categories.
+- **PDF Generation:** Generate PDFs of posts for offline access.
+- **News Feed:** An infinite scrolling feed of the latest tech tips.
+- **Profile Management:** Users can update their profile, including personal details and profile pictures.
+- **Admin Dashboard:** Manage users, posts, and payments.
+- **Following System:** Follow other users to see their posts and updates.
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+## Tech Stack
 
-## How to Use
+- **Frontend:** Next.js, TypeScript, Tailwind CSS
+- **Backend:** Node.js, Express, Mongoose
+- **Database:** MongoDB
+- **Deployment:** Vercel
+- **Payment Integration:** Aamarpay/Stripe
 
-### Use the template with create-next-app
+## Project Objectives
 
-To create a new project based on this template using `create-next-app`, run the following command:
+- Build a responsive web application for sharing and discovering tech tips.
+- Implement JWT-based user authentication.
+- Allow users to subscribe for premium content via payment gateways.
+- Provide advanced search, filtering, and content sorting functionalities.
+- Enable social interactions with upvoting, comments, and followers.
 
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
+## Local Installation
 
-### Install dependencies
+Follow the steps below to set up the project locally:
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+### Prerequisites
 
-```bash
-npm install
-```
+- **Node.js** (v14 or above)
+- **MongoDB** (installed locally or using MongoDB Atlas)
+- **Vercel CLI** (optional, if you want to deploy via Vercel)
+  
+### Installation
 
-### Run the development server
+1. **Clone the repository**:
 
-```bash
-npm run dev
-```
+   ```bash
+   git clone https://github.com/alimransahin/mre-frontend.git
+   cd mre-frontend
 
-### Setup pnpm (optional)
+2. Install dependencies:
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+   ```bash
+    npm install
 
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
+3. Set up environment variables </br>
+Create a .env.local file in the root of your project with the following content:
+    ```bash
+    NEXT_PUBLIC_BASE_API=https://mra-backent.vercel.app/api
+    NEXT_PUBLIC_IMGBB_API=2bf1c09014fd148ecbd27325fd6f8ada
+4. Start the development server </br>
+Run the following command to start the development server:
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+  ```bash
+  npm run dev
