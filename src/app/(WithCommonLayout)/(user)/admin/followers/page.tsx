@@ -16,7 +16,7 @@ const FollowersPage = () => {
   }, [user?.email, handleGetUser]);
 
   const followersData = data?.data?.followers || [];
-  const loading = !data; // Determine loading state based on data availability
+  const loading = !data; 
 
   return (
     <div className="flex flex-col items-center justify-center py-10">

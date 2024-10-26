@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import RecentPosts from "./loading";
 import { getAllPost } from "@/src/services/RecentPost";
 import Container from "@/src/components/UI/Container";
-import PostCard from "@/src/components/UI/Card";
+import PostCard from "@/src/components/UI/post/Card";
 import { debounce } from "lodash";
 import { useUser } from "@/src/context/UserProvider";
 import Loading from "@/src/components/UI/Loading";

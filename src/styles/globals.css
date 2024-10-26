@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-.custom-description h2,
-h1 {
+.custom-description h1 {
   font-size: 25px;
-  font-weight: bold;
+}
+.custom-description h2 {
+  font-size: 20px;
 }
 
 .custom-description p {

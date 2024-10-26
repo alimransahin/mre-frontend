@@ -19,12 +19,13 @@ interface PostCardProps {
   post: any;
   paramsId?: string;
 }
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
+  console.log(post);
   const { user } = useUser();
   const description = post?.description;
   let smallDescription;
 
-  if (description <= 300) {
+  if (description <= 300 || paramsId) {
     smallDescription = description;
   } else {
     smallDescription = description?.slice(0, 300);
@@ -39,9 +40,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   // Upvote and downvote handlers
   const onUpvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Upvote" };
-
     handleUpvote(data);
-
     setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
     setUpvotes((prev: number) => prev + 1);
     isSuccess && toast.success("Upvoted");
@@ -49,21 +48,17 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   const onDownvote = (postId: string) => {
     const data = { userId: user?._id, postId, voteType: "Downvote" };
-
     handleUpvote(data);
     setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
     setDownvotes((prev: number) => prev + 1);
     isSuccess && toast.success("Downvoted");
   };
 
-  // comment
-
   const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
   const [follow, setFollow] = useState(false); // Initialize to false by default
   const { mutate: handleFollow } = useUpdateFollow();
 
   useEffect(() => {
-    // Check if followStatus is an array and user._id exists
     if (Array.isArray(followStatus) && user?._id) {
       setFollow(followStatus.includes(user._id));
     }
@@ -72,8 +67,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const onFollowClick = async () => {
     if (!user?._id) {
       toast.error("User is not authenticated");
-
-      return; // Stop execution if user ID is not available
+      return;
     }
 
     try {
@@ -81,7 +75,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         authId: post.user._id,
         userId: user._id,
       });
-      setFollow(!follow); // Toggle follow state
+      setFollow(!follow);
     } catch (error) {
       toast.error("Failed to update follow status");
     }
@@ -121,7 +115,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   return (
     // <div className="flex justify-center ">
-    <Card className={`max-w-2xl w-full mx-auto shadow-lg p-4 bg-default-50 `}>
+    <Card
+      className={`max-w-2xl w-full mx-auto shadow-lg p-4 bg-default-50 ${paramsId ? "rounded-b-none" : "rounded-non"}`}
+    >
       <div ref={postRef}>
         {/* Header Section */}
         <CardHeader className="p-0">
@@ -165,7 +161,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               dangerouslySetInnerHTML={{ __html: smallDescription }}
               className="custom-description"
             />
-            {description?.length > 300 && (
+            {description?.length > 300 && !paramsId && (
               <Link
                 className="text-primary-600 inline ml-1"
                 href={`/post-details/${post._id}`}
@@ -206,13 +202,15 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         >
           <ArrowBigDown className="mx-auto" /> Down vote
         </button>
-        <Link
-          className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
-          href={`/post-details/${post._id}`}
-        >
-          <MessageSquareMore className="mx-auto" />
-          Comment
-        </Link>
+        {!paramsId && (
+          <Link
+            href={`/post-details/${post._id}`}
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+          >
+            <MessageSquareMore className="mx-auto" />
+            Comment
+          </Link>
+        )}
         <button
           className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
           onClick={() => handleShare(post._id)}

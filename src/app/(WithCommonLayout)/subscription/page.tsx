@@ -8,7 +8,6 @@ import { usePayment } from "@/src/hooks/auth.hook";
 import { useUser } from "@/src/context/UserProvider";
 
 const SubscriptionPage = () => {
-  // Define subscription plans
   const subscriptionPlans = [
     {
       id: 1,

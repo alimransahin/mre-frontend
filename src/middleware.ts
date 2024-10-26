@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { getActiveUser } from "./services/AuthService";
 
 const AuthRoutes = ["/login", "/signup"];
-const logoutPath = "/logout"; // Define the logout path
+const logoutPath = "/logout"; 
 
 type Role = keyof typeof roleBasedRoutes;
 

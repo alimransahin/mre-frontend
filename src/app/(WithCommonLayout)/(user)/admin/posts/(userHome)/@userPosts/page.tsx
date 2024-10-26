@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import RecentPosts from "./loading";
 import { getAllPost } from "@/src/services/RecentPost";
 import Container from "@/src/components/UI/Container";
-import PostCard from "@/src/components/UI/Card";
+import PostCard from "@/src/components/UI/post/Card";
 import { debounce } from "lodash";
 import { useUser } from "@/src/context/UserProvider";
 import Loading from "@/src/components/UI/Loading";
@@ -14,7 +14,7 @@ interface IPost {
   upvotes: number;
   createdAt: Date;
   isPremium: boolean;
-  user: { email: string }; // Assuming user info is part of the post
+  user: { email: string };
 }
 
 const RecentPost = () => {
@@ -42,15 +42,13 @@ const RecentPost = () => {
       ? data
       : data.filter((post: IPost) => !post.isPremium);
 
-    // Update total pages based on the response
-    const totalPosts = data.length; // Replace with actual total posts count from response
-    setTotalPages(Math.ceil(totalPosts / 10)); // Assuming 10 posts per page
+    const totalPosts = data.length;
+    setTotalPages(Math.ceil(totalPosts / 10));
 
     setAllPosts((prevPosts) => [...prevPosts, ...filteredPosts]);
     setLoading(false);
   };
 
-  // Fetch user-specific posts based on email
   useEffect(() => {
     const fetchUserPosts = async () => {
       if (user) {
@@ -65,7 +63,6 @@ const RecentPost = () => {
     fetchUserPosts();
   }, [user]);
 
-  // Fetch posts on page change, search term, category, or sort order
   useEffect(() => {
     fetchPosts(page, searchTerm, category, sortBy);
   }, [page, searchTerm, category, sortBy]);
@@ -73,8 +70,8 @@ const RecentPost = () => {
   const debouncedSearch = useCallback(
     debounce((value) => {
       setSearchTerm(value);
-      setPage(1); // Reset to page 1
-      setAllPosts([]); // Clear previous posts
+      setPage(1);
+      setAllPosts([]);
     }, 500),
     []
   );
@@ -114,7 +111,6 @@ const RecentPost = () => {
     setAllPosts([]);
   };
 
-  // Use userPosts if user is authenticated; else use posts
   const displayedPosts = user ? userPosts : posts;
 
   return (

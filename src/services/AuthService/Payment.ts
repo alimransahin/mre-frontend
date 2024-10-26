@@ -1,7 +1,6 @@
 "use client";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
-
 import axiosInstance from "@/src/lib/AxiosInstance";
 
 export const makePayment = async (userData: FieldValues) => {
@@ -10,8 +9,6 @@ export const makePayment = async (userData: FieldValues) => {
       `/user/${userData.userId}`,
       userData.data
     );
-    console.log(data);
-
     if (data.errors && data.errors.length > 0) {
       toast.error(data.errors[0]);
 

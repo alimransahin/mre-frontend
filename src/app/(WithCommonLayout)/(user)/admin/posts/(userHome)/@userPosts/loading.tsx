@@ -9,7 +9,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Skeleton } from "@nextui-org/skeleton";
 
 export default async function LoadingPost() {
-  const skeletonCards = Array(3).fill(0); // Create an array of 3 elements
+  const skeletonCards = Array(3).fill(0);
 
   return (
     <div className="flex flex-col items-center space-y-6">

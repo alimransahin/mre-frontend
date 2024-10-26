@@ -15,7 +15,6 @@ const LoginActivity = () => {
   function convertISOToReadableDate(isoDate: string): string {
     const date = new Date(isoDate);
 
-    // Formatting options
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "long",
@@ -26,7 +25,6 @@ const LoginActivity = () => {
       timeZoneName: "short",
     };
 
-    // Convert to local date and time
     return date.toLocaleDateString(undefined, options);
   }
 

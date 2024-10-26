@@ -17,15 +17,15 @@ const FollowingPage = () => {
     }
   }, [user?.email, handleGetUser]);
 
-  const followingData = data?.data?.following || []; // Adjust to get following users
+  const followingData = data?.data?.following || []; 
 
-  const loading = !data; // Determine loading state based on data availability
+  const loading = !data; 
 
   const onFollowClick = async (authorId: string) => {
     if (!user?._id) {
       toast.error("User is not authenticated");
 
-      return; // Stop execution if user ID is not available
+      return; 
     }
 
     try {
@@ -83,7 +83,7 @@ const FollowingPage = () => {
                     <td className="py-3 px-5">
                       <button
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        onClick={() => onFollowClick(following._id)} // Use an arrow function to pass the ID
+                        onClick={() => onFollowClick(following._id)} 
                       >
                         Unfollow
                       </button>

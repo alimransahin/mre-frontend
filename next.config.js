@@ -6,7 +6,7 @@ const nextConfig = {
       "avatar.iran.liara.run",
       "i.ibb.co",
       "i.ibb.co.com",
-    ], // Add Unsplash domain here for image optimization
+    ], 
   },
 };
 

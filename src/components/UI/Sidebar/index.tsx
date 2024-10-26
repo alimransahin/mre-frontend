@@ -49,7 +49,7 @@ const Sidebar = () => {
     try {
       const response = await axios.post(
         `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,
-        formData,
+        formData
       );
       const directLink = response.data.data.url;
       const profilePicture = { profilePicture: directLink };
@@ -134,5 +134,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-// {name: 'Md Al Imran', phone: '01517824146', address: 'Baliapara Rupganj'}
