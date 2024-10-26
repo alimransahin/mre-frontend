@@ -20,6 +20,7 @@ interface IComment {
   userId: {
     profilePicture: string;
     name: string;
+    _id: string;
   };
 }
 interface CommentsPageProps {
@@ -65,24 +66,29 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
   }
 
   const comments = sampleComments?.data?.comments;
+  // console.log(comments);
   // create comment
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      const commentData = {
-        ...data,
-        postId: postId,
-        userId: user?._id,
-      };
+    if (!user) {
+      toast.error("Please Login First");
+    } else {
+      try {
+        const commentData = {
+          ...data,
+          postId: postId,
+          userId: user?._id,
+        };
 
-      await handleComment(commentData);
+        await handleComment(commentData);
 
-      toast.success("Comment posted successfully");
-      reset();
-      setNewComment("");
-      mutate({ postId });
-    } catch (error) {
-      toast.error("Failed to post comment");
+        toast.success("Comment posted successfully");
+        reset();
+        setNewComment("");
+        mutate({ postId });
+      } catch (error) {
+        toast.error("Failed to post comment");
+      }
     }
   };
   // update comment
@@ -191,7 +197,9 @@ const CommentsPage: React.FC<CommentsPageProps> = ({ postId }) => {
                 </div>
               </CardHeader>
               <CardBody className="px-4">{comment.comment}</CardBody>
-              <CardFooter className="py-0">
+              <CardFooter
+                className={`py-0 ${user?._id != comment?.userId?._id && "hidden"}`}
+              >
                 <button
                   className="cursor-pointer p-2"
                   onClick={() => handleEditComment(comment._id)}

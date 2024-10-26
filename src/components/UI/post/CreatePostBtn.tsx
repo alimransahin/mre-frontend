@@ -8,6 +8,7 @@ import QuillEditor from "./Editor";
 
 import { useUser } from "@/src/context/UserProvider";
 import { useGetCurrentUser } from "@/src/hooks/auth.hook";
+import { toast } from "sonner";
 
 const CreatePostBtn = () => {
   const { user } = useUser();
@@ -23,7 +24,11 @@ const CreatePostBtn = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
-    setIsModalOpen(true);
+    if (!user) {
+      toast.error("Please Login First");
+    } else {
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -47,7 +52,7 @@ const CreatePostBtn = () => {
               />
             )}
             <input
-              className="flex-1 bg-default-50  p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="flex-1 bg-default-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               placeholder="What's on your mind, Md?"
               type="text"
             />

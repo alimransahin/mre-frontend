@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useUser } from "@/src/context/UserProvider";
-import { useUserUpvote } from "@/src/hooks/post.hook";
+import { useGetSinglePost, useUserUpvote } from "@/src/hooks/post.hook";
 import { useUpdateFollow } from "@/src/hooks/auth.hook";
 
 interface PostCardProps {
@@ -20,7 +20,19 @@ interface PostCardProps {
   paramsId?: string;
 }
 const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
-  console.log(post);
+  const { data: voteInfo, error, mutate } = useGetSinglePost();
+  useEffect(() => {
+    if (paramsId) {
+      mutate({ postId: paramsId });
+    }
+  }, [paramsId, mutate]);
+  useEffect(() => {
+    setUpvotes(voteInfo?.data?.upvotes); // Log voteInfo here
+    setDownvotes(voteInfo?.data?.downvotes); // Log voteInfo here
+  }, [voteInfo]);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   const { user } = useUser();
   const description = post?.description;
   let smallDescription;
@@ -39,19 +51,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
 
   // Upvote and downvote handlers
   const onUpvote = (postId: string) => {
-    const data = { userId: user?._id, postId, voteType: "Upvote" };
-    handleUpvote(data);
-    setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
-    setUpvotes((prev: number) => prev + 1);
-    isSuccess && toast.success("Upvoted");
+    if (!user) {
+      toast.error("Please Login First");
+    } else {
+      const data = { userId: user?._id, postId, voteType: "Upvote" };
+      handleUpvote(data);
+      // setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
+      // setUpvotes((prev: number) => prev + 1);
+      setUpvotes(voteInfo?.data?.upvotes);
+      isSuccess && toast.success("Upvoted");
+      mutate({ postId });
+    }
   };
 
   const onDownvote = (postId: string) => {
-    const data = { userId: user?._id, postId, voteType: "Downvote" };
-    handleUpvote(data);
-    setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
-    setDownvotes((prev: number) => prev + 1);
-    isSuccess && toast.success("Downvoted");
+    if (!user) {
+      toast.error("Please Login First");
+    } else {
+      const data = { userId: user?._id, postId, voteType: "Downvote" };
+      handleUpvote(data);
+      // setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
+      // setDownvotes((prev: number) => prev + 1);
+      isSuccess && toast.success("Downvoted");
+      mutate({ postId });
+    }
   };
 
   const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
@@ -66,7 +89,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
 
   const onFollowClick = async () => {
     if (!user?._id) {
-      toast.error("User is not authenticated");
+      toast.error("Please Login First");
       return;
     }
 
