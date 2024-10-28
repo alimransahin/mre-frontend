@@ -41,10 +41,8 @@ const SubscriptionPage = () => {
   const { mutate: handlePayment } = usePayment();
   const onSubmit = async (plan: { price: number }) => {
     try {
-      const currentPageLink = "http://localhost:3000";
       const paymentData = {
         subscriptionPrice: plan.price,
-        currentPageLink: currentPageLink,
       };
       userId && handlePayment({ data: paymentData, userId });
     } catch (error) {

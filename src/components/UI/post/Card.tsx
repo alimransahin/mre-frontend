@@ -19,67 +19,35 @@ interface PostCardProps {
   post: any;
   paramsId?: string;
 }
+
 const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
+  // Hooks at the top level of the component
   const { data: voteInfo, error, mutate } = useGetSinglePost();
+  const { user } = useUser();
+  const { mutate: handleUpvote, isSuccess } = useUserUpvote();
+  const { mutate: handleFollow } = useUpdateFollow();
+
+  const [upvotes, setUpvotes] = useState(post?.upvotes || 0);
+  const [downvotes, setDownvotes] = useState(post?.downvotes || 0);
+  const [follow, setFollow] = useState(false);
+
+  const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
+  const description = post?.description;
+  const smallDescription =
+    description?.length > 300 && !paramsId
+      ? description.slice(0, 300)
+      : description;
+
   useEffect(() => {
     if (paramsId) {
       mutate({ postId: paramsId });
     }
   }, [paramsId, mutate]);
+
   useEffect(() => {
-    setUpvotes(voteInfo?.data?.upvotes); // Log voteInfo here
-    setDownvotes(voteInfo?.data?.downvotes); // Log voteInfo here
+    setUpvotes(voteInfo?.data?.upvotes);
+    setDownvotes(voteInfo?.data?.downvotes);
   }, [voteInfo]);
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  const { user } = useUser();
-  const description = post?.description;
-  let smallDescription;
-
-  if (description <= 300 || paramsId) {
-    smallDescription = description;
-  } else {
-    smallDescription = description?.slice(0, 300);
-  }
-
-  const { mutate: handleUpvote, isSuccess } = useUserUpvote();
-
-  // State for upvotes and downvotes
-  const [upvotes, setUpvotes] = useState(post?.upvotes ? post.upvotes : 0);
-  const [downvotes, setDownvotes] = useState(post?.upvotes ? post.upvotes : 0);
-
-  // Upvote and downvote handlers
-  const onUpvote = (postId: string) => {
-    if (!user) {
-      toast.error("Please Login First");
-    } else {
-      const data = { userId: user?._id, postId, voteType: "Upvote" };
-      handleUpvote(data);
-      // setDownvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
-      // setUpvotes((prev: number) => prev + 1);
-      setUpvotes(voteInfo?.data?.upvotes);
-      isSuccess && toast.success("Upvoted");
-      mutate({ postId });
-    }
-  };
-
-  const onDownvote = (postId: string) => {
-    if (!user) {
-      toast.error("Please Login First");
-    } else {
-      const data = { userId: user?._id, postId, voteType: "Downvote" };
-      handleUpvote(data);
-      // setUpvotes((prev: number) => Math.max(prev - 1, 0)); // Decrease downvotes safely
-      // setDownvotes((prev: number) => prev + 1);
-      isSuccess && toast.success("Downvoted");
-      mutate({ postId });
-    }
-  };
-
-  const followStatus = post?.user?.followers || []; // Fallback to an empty array if undefined
-  const [follow, setFollow] = useState(false); // Initialize to false by default
-  const { mutate: handleFollow } = useUpdateFollow();
 
   useEffect(() => {
     if (Array.isArray(followStatus) && user?._id) {
@@ -87,48 +55,62 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
     }
   }, [user?._id, followStatus]);
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // Handlers
+  const onUpvote = (postId: string) => {
+    if (!user) {
+      toast.error("Please Login First");
+      return;
+    }
+    const data = { userId: user._id, postId, voteType: "Upvote" };
+    handleUpvote(data);
+    if (isSuccess) {
+      toast.success("Upvoted");
+      mutate({ postId });
+    }
+  };
+
+  const onDownvote = (postId: string) => {
+    if (!user) {
+      toast.error("Please Login First");
+      return;
+    }
+    const data = { userId: user._id, postId, voteType: "Downvote" };
+    handleUpvote(data);
+    if (isSuccess) {
+      toast.success("Downvoted");
+      mutate({ postId });
+    }
+  };
+
   const onFollowClick = async () => {
     if (!user?._id) {
       toast.error("Please Login First");
       return;
     }
-
     try {
-      const result = await handleFollow({
-        authId: post.user._id,
-        userId: user._id,
-      });
+      await handleFollow({ authId: post.user._id, userId: user._id });
       setFollow(!follow);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update follow status");
     }
   };
 
-  // Generate PDF function
-  const postRef = useRef(null);
   const handleGeneratePdf = () => {
-    // const opt = {
-    //   margin: 1,
-    //   filename: "myfile.pdf",
-    //   image: { type: "jpeg", quality: 0.98 },
-    //   html2canvas: { scale: 2 },
-    //   jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    // };
-    // html2pdf().from(postRef.current).set(opt).save();
+    // Add PDF generation logic here
   };
-  // share
+
   const handleShare = async (postId: string) => {
     const postUrl = `${window.location.origin}/post-details/${postId}`;
     const title = post?.user?.name || "Check out this post!";
-
     if (navigator.share) {
       try {
-        await navigator.share({
-          title,
-          url: postUrl,
-        });
+        await navigator.share({ title, url: postUrl });
         toast.success("Post shared successfully!");
-      } catch (error) {
+      } catch {
         toast.error("Failed to share the post");
       }
     } else {
@@ -137,12 +119,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
   };
 
   return (
-    // <div className="flex justify-center ">
     <Card
-      className={`max-w-2xl w-full mx-auto shadow-lg p-4 bg-default-50 ${paramsId ? "rounded-b-none" : "rounded-non"}`}
+      className={`max-w-2xl w-full mx-auto shadow-lg p-4 bg-default-50 ${paramsId ? "rounded-b-none" : "rounded-none"}`}
     >
-      <div ref={postRef}>
-        {/* Header Section */}
+      <div>
         <CardHeader className="p-0">
           <img
             alt="Profile"
@@ -152,7 +132,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
           <div className="flex items-center">
             <div>
               <div className="flex flex-row gap-1 items-center">
-                <h4 className=" font-semibold inline-block">
+                <h4 className="font-semibold inline-block">
                   {post?.user?.name}
                 </h4>
                 <button
@@ -177,22 +157,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
           </div>
         </CardHeader>
 
-        {/* Main Image */}
         <CardBody className="p-0 py-3">
-          <div>
-            <span
-              dangerouslySetInnerHTML={{ __html: smallDescription }}
-              className="custom-description"
-            />
-            {description?.length > 300 && !paramsId && (
-              <Link
-                className="text-primary-600 inline ml-1"
-                href={`/post-details/${post._id}`}
-              >
-                See More
-              </Link>
-            )}
-          </div>
+          <div
+            dangerouslySetInnerHTML={{ __html: smallDescription }}
+            className="custom-description"
+          />
+          {description?.length > 300 && !paramsId && (
+            <Link
+              className="text-primary-600 inline ml-1"
+              href={`/post-details/${post._id}`}
+            >
+              See More
+            </Link>
+          )}
           {post.image && (
             <Image
               alt="Post Image"
@@ -203,52 +180,51 @@ const PostCard: React.FC<PostCardProps> = ({ post, paramsId }) => {
             />
           )}
         </CardBody>
+
         <CardBody className="p-4 flex flex-row justify-between">
           <p className="text-default-500 text-sm">{upvotes} Upvotes</p>
           <p className="text-default-500 text-sm">{downvotes} Downvotes</p>
           <p className="text-default-500 text-sm">
-            {post.comments?.length ? post.comments.length : 0} Comments
+            {post.comments?.length || 0} Comments
           </p>
         </CardBody>
-      </div>
-      {/* Footer Buttons */}
-      <CardFooter className="border-t border-gray-200 p-2 flex justify-around">
-        <button
-          className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
-          onClick={() => onUpvote(post._id)}
-        >
-          <ArrowBigUp className="mx-auto" /> Upvote
-        </button>
-        <button
-          className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
-          onClick={() => onDownvote(post._id)}
-        >
-          <ArrowBigDown className="mx-auto" /> Down vote
-        </button>
-        {!paramsId && (
-          <Link
-            href={`/post-details/${post._id}`}
+
+        <CardFooter className="border-t border-gray-200 p-2 flex justify-around">
+          <button
             className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            onClick={() => onUpvote(post._id)}
           >
-            <MessageSquareMore className="mx-auto" />
-            Comment
-          </Link>
-        )}
-        <button
-          className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
-          onClick={() => handleShare(post._id)}
-        >
-          <Forward className="mx-auto" /> Share
-        </button>
-        <button
-          className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200 "
-          onClick={handleGeneratePdf}
-        >
-          <Download className="mx-auto" /> Save
-        </button>
-      </CardFooter>
+            <ArrowBigUp className="mx-auto" /> Upvote
+          </button>
+          <button
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            onClick={() => onDownvote(post._id)}
+          >
+            <ArrowBigDown className="mx-auto" /> Down vote
+          </button>
+          {!paramsId && (
+            <Link
+              href={`/post-details/${post._id}`}
+              className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            >
+              <MessageSquareMore className="mx-auto" /> Comment
+            </Link>
+          )}
+          <button
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            onClick={() => handleShare(post._id)}
+          >
+            <Forward className="mx-auto" /> Share
+          </button>
+          <button
+            className="text-center p-1 cursor-pointer rounded-md hover:bg-default-200"
+            onClick={handleGeneratePdf}
+          >
+            <Download className="mx-auto" /> Save
+          </button>
+        </CardFooter>
+      </div>
     </Card>
-    // </div>
   );
 };
 

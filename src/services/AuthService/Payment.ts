@@ -18,7 +18,6 @@ export const makePayment = async (userData: FieldValues) => {
     if (data?.data?.payment_url) {
       if (window !== undefined) {
         window.location.href = data.data.payment_url;
-        toast.success("Payment successfull");
       }
     } else {
       toast.error("Payment URL not found. Please try again.");
@@ -30,5 +29,22 @@ export const makePayment = async (userData: FieldValues) => {
       "An error occurred during the payment process. Please try again."
     );
     throw new Error(error.response?.data?.message || "Unknown error occurred.");
+  }
+};
+export const paymentInfo = async (paymenturl: any) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/payment/confirmation",
+      paymenturl
+    );
+
+    if (data.success) {
+      //  cookies().set("accessToken", data?.data?.accessToken);
+      //  cookies().set("refreshToken", data?.data?.refreshToken);
+    }
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
   }
 };

@@ -15,8 +15,13 @@ import {
   UpdateUserStatus,
   getAllActivity,
 } from "../services/AuthService";
-import { makePayment } from "../services/AuthService/Payment";
+import { makePayment, paymentInfo } from "../services/AuthService/Payment";
 
+type PaymentUrl = {
+  transactionId: string | null;
+  status: string | null;
+  userId: string | null;
+};
 export const useUserSignup = () => {
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["User_Signup"],
@@ -164,6 +169,16 @@ export const usePayment = () => {
     onSuccess: () => {
       // toast.success("Payment successfull");
     },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+};
+export const usePaymentInfo = () => {
+  return useMutation<any, Error, PaymentUrl>({
+    mutationKey: ["User_Payment_Info"],
+    mutationFn: async (paymenturl) => await paymentInfo(paymenturl),
+
     onError: (error) => {
       toast.error(error?.message);
     },
